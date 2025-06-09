@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -21,20 +20,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.withStyle
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
-import com.example.myerasmus.R
+
+
+
+
+
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onRegisterClick: () -> Unit
+fun RegisterScreen(
+    onRegisterSuccess: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -47,26 +50,18 @@ fun LoginScreen(
             ) {
                 focusManager.clearFocus()
             }
-            .padding(32.dp)
+            .padding(64.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 120.dp)
+            modifier = Modifier.padding(top = 32.dp)
         ) {
             Text(
-                text = stringResource(R.string.app_name),
+                text = "Create an account",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
-
-            Image(
-                painter = painterResource(id = R.drawable.logo_myerasmus),
-                contentDescription = "Logo MyErasmus",
-                modifier = Modifier
-                    .size(300.dp)
-            )
         }
-
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             OutlinedTextField(
                 value = email,
@@ -97,14 +92,37 @@ fun LoginScreen(
                 }
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirm password") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                singleLine = true,
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Icon(
+                            imageVector = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { onLoginSuccess() },
-                enabled = email.isNotBlank() && password.isNotBlank(),
+                onClick = {
+                    // Logics for the validation and sending
+                    onRegisterSuccess()
+                },
+                enabled = email.isNotBlank() && password.isNotBlank() && password == confirmPassword,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Login")
+                Text("Register")
             }
         }
 
@@ -112,21 +130,22 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 40.dp)
+                .padding(bottom = 8.dp)
         ) {
             Text(
                 text = buildAnnotatedString {
-                    append("Don't have an account? ")
+                    append("Already have an account? ")
+
                     withStyle(
                         style = SpanStyle(
                             color = Color(0xFFFFC107),
                             fontWeight = FontWeight.Bold
                         )
                     ) {
-                        append("Register")
+                        append("Log in")
                     }
                 },
-                modifier = Modifier.clickable { onRegisterClick() }
+                modifier = Modifier.clickable { onLoginClick() }
             )
         }
     }
