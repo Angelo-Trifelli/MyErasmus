@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myerasmus.ui.screens.authentication.LoginScreen
 import com.example.myerasmus.ui.screens.authentication.RegisterScreen
+import com.example.myerasmus.ui.screens.homepage.HomepageScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -15,7 +16,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("login") {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate("login") {
+                    navController.navigate("homepage") {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -34,6 +35,15 @@ fun AppNavigation(navController: NavHostController) {
                 },
                 onLoginClick = {
                     navController.navigate("login")
+                }
+            )
+        }
+
+        // Homepage Route
+        composable("homepage") {
+            HomepageScreen(
+                onNavigate = {
+                    //TODO: implement navigation
                 }
             )
         }
