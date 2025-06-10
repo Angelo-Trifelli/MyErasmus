@@ -4,19 +4,21 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.myerasmus.ui.components.enums.BottomBarDestination
 import com.example.myerasmus.ui.screens.authentication.LoginScreen
 import com.example.myerasmus.ui.screens.authentication.RegisterScreen
 import com.example.myerasmus.ui.screens.homepage.HomepageScreen
+import com.example.myerasmus.ui.screens.profile.ProfileScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "login") {
 
-        // Login Route
+        // Login
         composable("login") {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate("homepage") {
+                    navController.navigate(BottomBarDestination.Homepage.route) {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -25,7 +27,8 @@ fun AppNavigation(navController: NavHostController) {
                 }
             )
         }
-        // Register Route
+
+        // Register
         composable("register") {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -39,13 +42,43 @@ fun AppNavigation(navController: NavHostController) {
             )
         }
 
-        // Homepage Route
-        composable("homepage") {
+        // Homepage
+        composable(BottomBarDestination.Homepage.route) {
             HomepageScreen(
-                onNavigate = {
-                    //TODO: implement navigation
+                onNavigate = { route ->
+                    navController.navigate(route) {
+                        popUpTo(BottomBarDestination.Homepage.route)
+                        launchSingleTop = true
+                    }
                 }
             )
+        }
+
+        // Profile
+        composable(BottomBarDestination.Profile.route) {
+            ProfileScreen(
+                onNavigate = { route ->
+                    navController.navigate(route) {
+                        popUpTo(BottomBarDestination.Homepage.route)
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        // Placeholder for FindExamPage
+        composable(BottomBarDestination.FindExamPage.route) {
+            // TODO: Sostituire con la vera schermata
+        }
+
+        // Placeholder for LearningAgreementHomepage
+        composable(BottomBarDestination.LearningAgreementHomepage.route) {
+            // TODO: Sostituire con la vera schermata
+        }
+
+        // Placeholder for Messages
+        composable(BottomBarDestination.Messages.route) {
+            // TODO: Sostituire con la vera schermata
         }
     }
 }

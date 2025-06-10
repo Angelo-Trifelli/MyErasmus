@@ -1,5 +1,6 @@
 package com.example.myerasmus.ui.screens.authentication
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -21,8 +23,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.withStyle
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
 import com.example.myerasmus.R
 
 @Composable
@@ -35,7 +35,12 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var loginError by remember { mutableStateOf(false) }
 
+    //val validEmail = "ruzzoli.1234567@studio.unibo.it"
+    //val validPassword = "PinkFloyd1973"
+    val validEmail = "1"
+    val validPassword = "1"
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,15 +67,17 @@ fun LoginScreen(
             Image(
                 painter = painterResource(id = R.drawable.logo_myerasmus),
                 contentDescription = "Logo MyErasmus",
-                modifier = Modifier
-                    .size(300.dp)
+                modifier = Modifier.size(300.dp)
             )
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = {
+                    email = it
+                    loginError = false
+                },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -81,7 +88,10 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    loginError = false
+                },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -100,11 +110,28 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { onLoginSuccess() },
+                onClick = {
+                    if (email == validEmail && password == validPassword) {
+                        onLoginSuccess()
+                    } else {
+                        loginError = true
+                        email = ""
+                        password = ""
+                    }
+                },
                 enabled = email.isNotBlank() && password.isNotBlank(),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Login")
+            }
+
+            if (loginError) {
+                Text(
+                    text = "email or password incorrect",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
         }
 
