@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import com.example.myerasmus.ui.components.enums.BottomBarDestination
 import com.example.myerasmus.ui.screens.authentication.LoginScreen
 import com.example.myerasmus.ui.screens.authentication.RegisterScreen
+import com.example.myerasmus.ui.screens.exam.FindExamPage
 import com.example.myerasmus.ui.screens.homepage.HomepageScreen
 import com.example.myerasmus.ui.screens.profile.ProfileScreen
 import com.example.myerasmus.ui.screens.social.MessagesScreen
@@ -74,7 +75,13 @@ fun AppNavigation(navController: NavHostController) {
 
         // FindExamPage
         composable(BottomBarDestination.FindExamPage.route) {
-            // TODO: implementare
+            FindExamPage(
+                onNavigate = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         // LearningAgreementHomepage
