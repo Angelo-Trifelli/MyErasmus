@@ -13,7 +13,9 @@ object CommonHelper {
                 year = "1°",
                 semester = "1°",
                 credits = 6,
-                language = "ENG"
+                language = "ENG",
+                professorFullName = "Alejandro Morales",
+                professorEmail = "alejandro.morales@ub.edu"
             ),
             Exam(
                 name = "Macroeconomics I",
@@ -24,7 +26,9 @@ object CommonHelper {
                 year = "2°",
                 semester = "1°",
                 credits = 6,
-                language = "ESP"
+                language = "ESP",
+                professorFullName = "Javier Ruiz",
+                professorEmail = "javier.ruiz@ub.edu"
             ),
             Exam(
                 name = "Regional and Local Finance",
@@ -35,9 +39,35 @@ object CommonHelper {
                 year = "3°",
                 semester = "2°",
                 credits = 6,
-                language = "ENG"
+                language = "ENG",
+                professorFullName = "Carmen Salgado Ortega",
+                professorEmail = "carmen.ortega@ub.edu"
             )
         )
+    }
+
+    fun findExamByName(examName: String) : Exam {
+        val exam = getTargetExamsList().find { it.name == examName }
+
+        if (exam != null) {
+            return exam
+        } else {
+            return getDefaultExam()
+        }
+    }
+
+    fun getDefaultExam() : Exam {
+        return getTargetExamsList()[0]
+    }
+
+    fun getReviewersName(examName: String) : List<String> {
+        val reviewList =
+            when(examName) {
+                "Business Economics" -> listOf("Carolina Monterini")
+                else -> listOf()
+            }
+
+        return reviewList
     }
 
 

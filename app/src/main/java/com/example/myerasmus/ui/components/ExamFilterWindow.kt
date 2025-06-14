@@ -26,6 +26,7 @@ import com.example.myerasmus.ui.classes.ExamFilterState
 @Composable
 fun ExamFilterWindow (
     state: MutableState<ExamFilterState>,
+    findExactMatch: Boolean,
     modifier: Modifier = Modifier
 ) {
     val targetExamList = CommonHelper.getTargetExamsList()
@@ -69,62 +70,64 @@ fun ExamFilterWindow (
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        if (!findExactMatch) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            SelectField(
-                label = "Year",
-                menuOptions = listOf("1°", "2°", "3°"),
-                selectedOption = state.value.year,
-                onOptionSelection = { state.value = state.value.copy(year = it) },
-                modifier = Modifier.fillMaxWidth(0.35f),
-                enabled = state.value.isExamSelectable
-            )
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SelectField(
+                    label = "Year",
+                    menuOptions = listOf("1°", "2°", "3°"),
+                    selectedOption = state.value.year,
+                    onOptionSelection = { state.value = state.value.copy(year = it) },
+                    modifier = Modifier.fillMaxWidth(0.35f),
+                    enabled = state.value.isExamSelectable
+                )
 
-            SelectField(
-                label = "Semester",
-                menuOptions = listOf("1°", "2°"),
-                selectedOption = state.value.semester,
-                onOptionSelection = { state.value = state.value.copy(semester = it) },
-                modifier = Modifier.fillMaxWidth(0.65f),
-                enabled = state.value.isExamSelectable
-            )
+                SelectField(
+                    label = "Semester",
+                    menuOptions = listOf("1°", "2°"),
+                    selectedOption = state.value.semester,
+                    onOptionSelection = { state.value = state.value.copy(semester = it) },
+                    modifier = Modifier.fillMaxWidth(0.65f),
+                    enabled = state.value.isExamSelectable
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = state.value.credits,
+                    onValueChange = {
+                        state.value = state.value.copy(credits = it)
+                    },
+                    label = { Text(text = "Credits", style = MaterialTheme.typography.bodySmall) },
+                    modifier = Modifier.fillMaxWidth(0.35f),
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true,
+                    enabled = state.value.isExamSelectable
+                )
+
+                SelectField(
+                    label = "Language",
+                    menuOptions = listOf("ESP", "ENG"),
+                    selectedOption = state.value.language,
+                    onOptionSelection = { state.value = state.value.copy(language = it) },
+                    modifier = Modifier.fillMaxWidth(0.65f),
+                    enabled = state.value.isExamSelectable
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = state.value.credits,
-                onValueChange = {
-                    state.value = state.value.copy(credits = it)
-                },
-                label = { Text(text = "Credits", style = MaterialTheme.typography.bodySmall) },
-                modifier = Modifier.fillMaxWidth(0.35f),
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true,
-                enabled = state.value.isExamSelectable
-            )
-
-            SelectField(
-                label = "Language",
-                menuOptions = listOf("ESP", "ENG"),
-                selectedOption = state.value.language,
-                onOptionSelection = { state.value = state.value.copy(language = it) },
-                modifier = Modifier.fillMaxWidth(0.65f),
-                enabled = state.value.isExamSelectable
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         SelectField(
             label = "Exam",

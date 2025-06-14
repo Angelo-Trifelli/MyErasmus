@@ -11,6 +11,9 @@ fun profileImageRes(name: String): Int {
         "Giulia Casaldi" -> R.drawable.giulia_profile
         "Oliver Bennett" -> R.drawable.oliver_profile
         "Lukas Schneider" -> R.drawable.lukas_profile
+        "Alejandro Morales" -> R.drawable.business_economics_professor
+        "Javier Ruiz" -> R.drawable.macroeconomics_professor
+        "Carmen Salgado Ortega" -> R.drawable.regional_and_local_finance_professor
         else -> R.drawable.user_profile
     }
 }

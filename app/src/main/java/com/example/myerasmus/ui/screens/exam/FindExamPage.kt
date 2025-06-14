@@ -66,30 +66,33 @@ fun FindExamPage(
             )
         }
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
+
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ExamFilterWindow(state = examFilterState)
-
-            Spacer(modifier = Modifier.height(40.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ExamFilterWindow(state = examFilterState, findExactMatch = true)
+            }
 
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 IconButton(
-                    onClick = {},
-                    enabled = examFilterState.value.isExamSelectable,
+                    onClick = { onNavigate("examPage/${examFilterState.value.exam}?from=findExam") },
+                    enabled = examFilterState.value.isExamSelectable && examFilterState.value.exam.isNotBlank(),
                     modifier = Modifier
                         .size(80.dp)
                         .background(
-                            color = if (examFilterState.value.isExamSelectable) Color(0xFF003399) else Color.Gray,
+                            color = if (examFilterState.value.isExamSelectable && examFilterState.value.exam.isNotBlank()) Color(0xFF003399) else Color.Gray,
                             shape = CircleShape
                         )
                 ) {
@@ -100,8 +103,11 @@ fun FindExamPage(
                         modifier = Modifier.fillMaxSize(0.8f)
                     )
                 }
+
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
+
     }
 
 

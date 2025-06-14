@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">MyErasmus</string>
+    <string name="business_economics_description">
+        This course explores the application of economic theory to business decision-making. Students will learn how economic principles influence the strategic behavior of firms, market structures, pricing strategies, production costs, and the broader economic environment affecting businesses. The course blends microeconomic foundations with real-world case studies to provide students with analytical tools for evaluating business challenges in competitive markets.
+    </string>
+    <string name="macroeconomics_description">
+        Macroeconomics 1 introduces students to the fundamental principles of macroeconomic theory and policy. The course explores how entire economies function by examining aggregate indicators such as gross domestic product (GDP), unemployment, inflation, interest rates, and national income. Students will learn about the key models used to analyze the behavior of the economy, including the circular flow model, aggregate demand and supply, and the IS-LM framework.
+        Topics include the role of government fiscal and monetary policy, economic growth, business cycles, and international trade. Real-world case studies and data-driven analysis will help students connect theory to current global economic events.
+        This course lays the foundation for more advanced macroeconomic study and is essential for students pursuing economics, business, political science, or public policy.
+    </string>
+    <string name="regiona_and_local_finance_description">
+        Regional and local finance examines the financial mechanisms and policy frameworks that underpin subnational governments, including cities, municipalities, and regions. The course focuses on the revenue structures, expenditure responsibilities, and intergovernmental fiscal relations that define the financial autonomy and constraints of local and regional authorities.
+        Key topics include local taxation (e.g., property taxes, sales taxes), user fees, grants and transfers from higher levels of government, debt management, and budgeting practices. Students will explore how local governments fund essential services such as education, transportation, infrastructure, and public safety, and how fiscal decisions impact economic development and equity.
+        The course blends theoretical foundations with practical case studies, highlighting differences in regional finance systems across countries and within federal structures. Emphasis is also placed on current challenges such as urbanization, fiscal decentralization, and regional disparities.
+    </string>
+    <string name="business_economics_monterini_review">
+        Taking Business Economics with Dr. Alejandro Morales was one of the best choices I made this semester. He explains economic concepts with great clarity and always connects them to real-world examples, which makes everything easier to understand and apply. His classes are engaging, and he constantly encourages participation and discussion. The group case study was a truly enriching experience that helped me see how economic decisions are made in real companies. Highly recommended!
+    </string>
 </resources>

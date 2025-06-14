@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import com.example.myerasmus.ui.components.enums.BottomBarDestination
 import com.example.myerasmus.ui.screens.authentication.LoginScreen
 import com.example.myerasmus.ui.screens.authentication.RegisterScreen
+import com.example.myerasmus.ui.screens.exam.ExamScreen
 import com.example.myerasmus.ui.screens.exam.FindExamPage
 import com.example.myerasmus.ui.screens.homepage.HomepageScreen
 import com.example.myerasmus.ui.screens.profile.ProfileScreen
@@ -80,6 +81,31 @@ fun AppNavigation(navController: NavHostController) {
                     navController.navigate(route) {
                         launchSingleTop = true
                     }
+                }
+            )
+        }
+
+        // ExamPage
+        composable(
+            route = "examPage/{examName}?from={from}",
+            arguments = listOf(
+                navArgument("examName") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("from") {
+                    type = NavType.StringType
+                    defaultValue = "homepage"   //fall back origin
+                }
+            )
+        ) { backStackEntry ->
+            val examName = backStackEntry.arguments?.getString("examName") ?: ""
+            val from = backStackEntry.arguments?.getString("from") ?: "homepage"
+
+            ExamScreen(
+                examName = examName,
+                onBack = {
+                    navController.popBackStack(from, inclusive = false)
                 }
             )
         }

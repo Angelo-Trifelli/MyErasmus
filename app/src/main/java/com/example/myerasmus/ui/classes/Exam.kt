@@ -9,5 +9,7 @@ data class Exam(
     val year: String,
     val semester: String,
     val credits: Int,
-    val language: String
+    val language: String,
+    val professorFullName: String,
+    val professorEmail: String
 )
