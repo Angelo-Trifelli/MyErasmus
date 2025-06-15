@@ -22,7 +22,7 @@ import java.net.URLEncoder
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = BottomBarDestination.Homepage.route) {
 
         // Login
         composable("login") {

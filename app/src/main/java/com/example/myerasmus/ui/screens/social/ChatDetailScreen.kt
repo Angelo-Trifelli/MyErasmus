@@ -32,6 +32,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.font.FontWeight
 import com.example.myerasmus.utils.profileImageRes
+import androidx.compose.foundation.layout.navigationBarsPadding
+
 
 val userNameColors = mapOf(
     "Luca Agnellini" to Color(0xFF1E88E5),        // Blue
@@ -261,7 +263,8 @@ fun ChatDetailScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp, vertical = 8.dp)
+                    .navigationBarsPadding(), // 👈 aggiunge padding automatico sotto la barra di sistema
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { }) {
