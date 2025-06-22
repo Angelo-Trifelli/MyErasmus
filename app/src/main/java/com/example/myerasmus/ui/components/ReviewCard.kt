@@ -33,8 +33,10 @@ import com.example.myerasmus.utils.profileImageRes
 fun ReviewCard(
     studentName: String,
     rating: Int,
-    reviewText: String
-) {
+    reviewText: String,
+    studentImage: Int
+)
+{
     val imageId = profileImageRes(studentName)
 
     Card(
@@ -53,8 +55,8 @@ fun ReviewCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = imageId),
-                    contentDescription = "Avatar",
+                    painter = painterResource(id = studentImage),
+                    contentDescription = "Reviewer Profile",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(48.dp)

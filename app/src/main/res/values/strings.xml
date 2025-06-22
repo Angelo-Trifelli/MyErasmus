@@ -1,19 +1,86 @@
 <resources>
     <string name="app_name">MyErasmus</string>
-    <string name="business_economics_description">
-        This course explores the application of economic theory to business decision-making. Students will learn how economic principles influence the strategic behavior of firms, market structures, pricing strategies, production costs, and the broader economic environment affecting businesses. The course blends microeconomic foundations with real-world case studies to provide students with analytical tools for evaluating business challenges in competitive markets.
-    </string>
-    <string name="macroeconomics_description">
-        Macroeconomics 1 introduces students to the fundamental principles of macroeconomic theory and policy. The course explores how entire economies function by examining aggregate indicators such as gross domestic product (GDP), unemployment, inflation, interest rates, and national income. Students will learn about the key models used to analyze the behavior of the economy, including the circular flow model, aggregate demand and supply, and the IS-LM framework.
-        Topics include the role of government fiscal and monetary policy, economic growth, business cycles, and international trade. Real-world case studies and data-driven analysis will help students connect theory to current global economic events.
-        This course lays the foundation for more advanced macroeconomic study and is essential for students pursuing economics, business, political science, or public policy.
-    </string>
-    <string name="regiona_and_local_finance_description">
-        Regional and local finance examines the financial mechanisms and policy frameworks that underpin subnational governments, including cities, municipalities, and regions. The course focuses on the revenue structures, expenditure responsibilities, and intergovernmental fiscal relations that define the financial autonomy and constraints of local and regional authorities.
-        Key topics include local taxation (e.g., property taxes, sales taxes), user fees, grants and transfers from higher levels of government, debt management, and budgeting practices. Students will explore how local governments fund essential services such as education, transportation, infrastructure, and public safety, and how fiscal decisions impact economic development and equity.
-        The course blends theoretical foundations with practical case studies, highlighting differences in regional finance systems across countries and within federal structures. Emphasis is also placed on current challenges such as urbanization, fiscal decentralization, and regional disparities.
-    </string>
-    <string name="business_economics_monterini_review">
-        Taking Business Economics with Dr. Alejandro Morales was one of the best choices I made this semester. He explains economic concepts with great clarity and always connects them to real-world examples, which makes everything easier to understand and apply. His classes are engaging, and he constantly encourages participation and discussion. The group case study was a truly enriching experience that helped me see how economic decisions are made in real companies. Highly recommended!
-    </string>
+
+    <!-- Default Review -->
+    <string name="default_review">Very informative and engaging course!</string>
+
+    <!-- ✅ Business Economics -->
+    <string name="business_economics_monterini_review"><![CDATA[Great explanation of supply and demand. Super useful for Erasmus prep!]]></string>
+
+    <!-- ✅ Macroeconomics I -->
+    <string name="macroeconomics_sophie_review"><![CDATA[The professor explained macro concepts very clearly. Great for getting a broader economic view.]]></string>
+    <string name="macroeconomics_marek_review"><![CDATA[Lectures were informative but a bit too fast-paced for beginners.]]></string>
+    <string name="macroeconomics_luigi_review"><![CDATA[Useful content, but the assessment methods could be improved. I would have appreciated more practical examples to consolidate theory.]]></string>
+
+    <!-- ✅ Regional and Local Finance -->
+    <string name="finance_elena_review"><![CDATA[I liked the practical examples on public budgets. It really helped me understand how local governance works in Spain.]]></string>
+    <string name="finance_jonas_review"><![CDATA[Material was hard to follow without prior finance knowledge. I had to study extra to keep up.]]></string>
+    <string name="finance_ines_review"><![CDATA[Brilliant course structure and very helpful slides. The real-world case studies made everything more relatable.]]></string>
+
+    <!-- ✅ International Marketing -->
+    <string name="marketing_claire_review"><![CDATA[Loved the group projects and international case studies. This course really opened my mind to global strategies.]]></string>
+    <string name="marketing_alexander_review"><![CDATA[Interesting but felt a bit repetitive at times. Some topics could have been condensed into fewer lectures.]]></string>
+    <string name="marketing_theresa_review"><![CDATA[Great insights into cultural branding differences. The professor really encouraged us to think globally.]]></string>
+
+    <!-- ✅ Development Economics -->
+    <string name="development_daniel_review"><![CDATA[Enlightening and socially relevant content. It gave me a deeper understanding of economic inequality worldwide.]]></string>
+    <string name="development_yasmin_review"><![CDATA[Difficult readings, but the professor was supportive. I appreciated the effort to make the material accessible.]]></string>
+
+    <!-- ✅ Behavioral Finance -->
+    <string name="behavioral_kim_review"><![CDATA[Fun class with experiments and clear explanations. I finally understand how emotions affect financial decisions.]]></string>
+    <string name="behavioral_eduardo_review"><![CDATA[Needed more depth in psychological aspects. Sometimes the lessons felt too superficial.]]></string>
+    <string name="behavioral_sofia_review"><![CDATA[One of my favorite courses this semester. I loved how practical and applicable it was.]]></string>
+
+    <!-- ✅ Data Analysis -->
+    <string name="data_sven_review"><![CDATA[Really appreciated the use of real-world data sets. The practical exercises made the theory much easier to grasp.]]></string>
+    <string name="data_amelie_review"><![CDATA[A bit challenging at first, but extremely rewarding once you understand regression and hypothesis testing.]]></string>
+
+    <!-- ✅ Human Resource Management -->
+    <string name="hrm_nina_review"><![CDATA[Dynamic and engaging professor, very practical. The in-class simulations were the best part.]]></string>
+    <string name="hrm_omar_review"><![CDATA[Good content but too many assignments. I would have preferred more discussions and fewer papers.]]></string>
+
+    <!-- ✅ International Relations -->
+    <string name="ir_julia_review"><![CDATA[Fascinating case studies and current topics. Every lecture felt timely and thought-provoking.]]></string>
+    <string name="ir_mohammed_review"><![CDATA[Could use more interactive debate. Sometimes it felt like a monologue from the lecturer.]]></string>
+
+    <!-- ✅ Strategic Management -->
+    <string name="strategy_felipe_review"><![CDATA[Helped me understand company vision planning. I really enjoyed the strategic simulation projects.]]></string>
+    <string name="strategy_karin_review"><![CDATA[Clear lessons and fun simulations. The professor managed to make complex ideas easy to grasp.]]></string>
+
+    <!-- ✅ Entrepreneurship -->
+    <string name="entrepreneurship_linda_review"><![CDATA[Great mix of theory and startup case studies. The guest speakers were super inspiring!]]></string>
+    <string name="entrepreneurship_ricardo_review"><![CDATA[Inspiring and well-organized. Would recommend this to anyone interested in launching a business.]]></string>
+
+    <!-- Home University Exams Descriptions -->
+    <string name="math_description">Basic mathematics course covering algebra, calculus, and statistics.</string>
+    <string name="business_economics_description">Introduction to business economics including market structures and firm behavior.</string>
+    <string name="statistics_description">Fundamentals of statistical methods and data interpretation.</string>
+    <string name="accounting_description">Principles of financial and managerial accounting.</string>
+    <string name="corporate_finance_description">Analysis of corporate financial strategies and investment decisions.</string>
+    <string name="marketing_description">Basic concepts in marketing, market research and consumer behavior.</string>
+    <string name="organizational_behavior_description">Study of human behavior in organizational settings.</string>
+    <string name="public_law_description">Introduction to public law and legal frameworks.</string>
+    <string name="european_institutions_description">Understanding European Union institutions and policies.</string>
+    <string name="microeconomics_description">Economic decision-making at the individual and firm level.</string>
+
+    <!-- Host University Exams Descriptions -->
+    <string name="macroeconomics_description"><![CDATA[This course examines the behavior of national and global economies through key aggregate indicators such as GDP, inflation, and unemployment. It emphasizes the effects of fiscal and monetary policy on economic stability and growth, offering a solid foundation for understanding government interventions and international economic trends.]]></string>
+
+    <string name="regiona_and_local_finance_description"><![CDATA[Focused on the financial operations of local and regional governments, this course analyzes budgeting, taxation, and intergovernmental transfers. Students will explore real-world case studies and policy tools aimed at improving efficiency and accountability in public sector financial management.]]></string>
+
+    <string name="international_marketing_description"><![CDATA[This course delves into strategic marketing across international borders, addressing challenges such as cultural differences, foreign market entry, product adaptation, and global branding. Students will develop skills to create marketing plans suited for diverse international environments.]]></string>
+
+    <string name="development_economics_description"><![CDATA[An in-depth study of economic development theories and practices, this course explores poverty, inequality, human capital, and institutional factors. It examines how policies and international organizations influence development in low- and middle-income countries.]]></string>
+
+    <string name="behavioral_finance_description"><![CDATA[Blending psychology and finance, this course investigates how human biases and emotions affect investment decisions and market outcomes. Topics include overconfidence, loss aversion, herd behavior, and implications for portfolio management and financial regulation.]]></string>
+
+    <string name="data_analysis_description"><![CDATA[A practical course that introduces statistical software and programming for analyzing datasets. Topics include data cleaning, visualization, regression, and hypothesis testing, preparing students for evidence-based decision-making in business and economics.]]></string>
+
+    <string name="hrm_description"><![CDATA[This course focuses on effective human resource management in contemporary organizations. Topics include recruitment, training, performance appraisal, labor relations, and strategic HR planning, with emphasis on ethical and international dimensions of HR practices.]]></string>
+
+    <string name="international_relations_description"><![CDATA[A comprehensive overview of global politics, diplomatic history, and contemporary international issues. The course covers theories of international relations, state and non-state actors, conflict resolution, and institutions like the United Nations and the European Union.]]></string>
+
+    <string name="strategic_management_description"><![CDATA[This capstone course teaches students how to analyze internal and external environments to formulate and implement competitive business strategies. It includes strategic decision-making, leadership, innovation, and sustainability across various industries and contexts.]]></string>
+
+    <string name="entrepreneurship_description"><![CDATA[Designed for aspiring entrepreneurs, this course covers the startup process from ideation to launch. Students will learn how to identify opportunities, write business plans, assess risk, secure financing, and manage early-stage growth and innovation.]]></string>
 </resources>

@@ -67,7 +67,7 @@ fun MessagesScreen(onNavigate: (String) -> Unit) {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                placeholder = { Text("Search") },
+                placeholder = { Text("Search...") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.myerasmus.ui.classes.CommonHelper
 import com.example.myerasmus.ui.classes.ExamFilterState
+import com.example.myerasmus.utils.getAllHostExams
 
 @Composable
 fun ExamFilterWindow (
@@ -29,7 +30,7 @@ fun ExamFilterWindow (
     findExactMatch: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val targetExamList = CommonHelper.getTargetExamsList()
+    val targetExamList = getAllHostExams()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,14 +129,5 @@ fun ExamFilterWindow (
 
             Spacer(modifier = Modifier.height(16.dp))
         }
-
-        SelectField(
-            label = "Exam",
-            menuOptions = targetExamList.map{ it.name },
-            selectedOption = state.value.exam,
-            onOptionSelection = { state.value = state.value.copy(exam = it) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = state.value.isExamSelectable
-        )
     }
 }

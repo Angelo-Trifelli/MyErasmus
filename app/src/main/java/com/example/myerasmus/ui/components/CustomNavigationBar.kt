@@ -7,10 +7,7 @@ import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +25,7 @@ fun CustomNavigationBar(
         BottomBarDestination.entries.forEach { destination ->
             val icon = when (destination) {
                 BottomBarDestination.Homepage -> Icons.Default.Home
-                BottomBarDestination.FindExamPage -> Icons.Filled.Search
+                BottomBarDestination.FindExamPage -> Icons.Default.Search
                 BottomBarDestination.LearningAgreementHomepage -> Icons.AutoMirrored.Filled.LibraryBooks
                 BottomBarDestination.Messages -> Icons.Default.ChatBubble
                 BottomBarDestination.Profile -> Icons.Default.Person
@@ -48,7 +45,7 @@ fun CustomNavigationBar(
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color(0xFFFFCC00),
                     unselectedIconColor = Color(0xFFFFCC00),
-                    indicatorColor = Color(0xFF3366CC)      //Background for selected icon
+                    indicatorColor = Color(0xFF3366CC)
                 )
             )
         }

@@ -1,27 +1,10 @@
 package com.example.myerasmus.ui.screens.exam
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ManageSearch
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,26 +15,35 @@ import com.example.myerasmus.ui.components.CustomNavigationBar
 import com.example.myerasmus.ui.components.CustomTopBar
 import com.example.myerasmus.ui.components.ExamFilterWindow
 import com.example.myerasmus.ui.components.enums.BottomBarDestination
+import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FindExamPage(
-    onNavigate: (String) -> Unit
-) {
-
+fun FindExamPage(onNavigate: (String) -> Unit) {
     val examFilterState = remember { mutableStateOf(ExamFilterState()) }
+    val filter = examFilterState.value
 
+    val isSearchEnabled =
+        filter.university.isNotBlank() &&
+                filter.faculty.isNotBlank() &&
+                filter.department.isNotBlank() &&
+                filter.course.isNotBlank()
 
     Scaffold(
         topBar = {
             CustomTopBar(
                 title = {
-                    Text(
-                        text = "Find Exam",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Find Exam",
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 navigationIcon = {},
                 actions = {}
@@ -60,55 +52,50 @@ fun FindExamPage(
         bottomBar = {
             CustomNavigationBar(
                 currentDestination = BottomBarDestination.FindExamPage,
-                onItemSelected = { destination ->
-                    onNavigate(destination.route)
-                }
+                onItemSelected = { destination -> onNavigate(destination.route) }
             )
         }
-    ) {
-        Spacer(modifier = Modifier.height(8.dp))
-
+    ) { padding ->
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
+                .padding(padding)
                 .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ExamFilterWindow(state = examFilterState, findExactMatch = true)
-            }
+            Column {
+                ExamFilterWindow(state = examFilterState, findExactMatch = false)
 
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                IconButton(
-                    onClick = { onNavigate("examPage/${examFilterState.value.exam}?from=findExam") },
-                    enabled = examFilterState.value.isExamSelectable && examFilterState.value.exam.isNotBlank(),
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        val query = listOf(
+                            "university=${URLEncoder.encode(filter.university, "UTF-8")}",
+                            "faculty=${URLEncoder.encode(filter.faculty, "UTF-8")}",
+                            "department=${URLEncoder.encode(filter.department, "UTF-8")}",
+                            "course=${URLEncoder.encode(filter.course, "UTF-8")}",
+                            "year=${URLEncoder.encode(filter.year, "UTF-8")}",
+                            "semester=${URLEncoder.encode(filter.semester, "UTF-8")}",
+                            "credits=${URLEncoder.encode(filter.credits, "UTF-8")}",
+                            "language=${URLEncoder.encode(filter.language, "UTF-8")}"
+                        ).joinToString("&")
+
+                        onNavigate("filteredExamResults?$query")
+                    },
+                    enabled = isSearchEnabled,
                     modifier = Modifier
-                        .size(80.dp)
-                        .background(
-                            color = if (examFilterState.value.isExamSelectable && examFilterState.value.exam.isNotBlank()) Color(0xFF003399) else Color.Gray,
-                            shape = CircleShape
-                        )
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ManageSearch,
-                        contentDescription = "Search",
-                        tint = Color.White,
-                        modifier = Modifier.fillMaxSize(0.8f)
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isSearchEnabled) Color(0xFF003399) else Color.Gray,
+                        contentColor = Color.White
                     )
+                ) {
+                    Text("Search Exams")
                 }
-
-                Spacer(modifier = Modifier.height(100.dp))
             }
         }
-
     }
-
-
 }
