@@ -22,7 +22,7 @@ import com.example.myerasmus.ui.screens.exam.FilteredExamResultsScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = BottomBarDestination.Homepage.route) {
+    NavHost(navController = navController, startDestination = "login") {
 
         composable(BottomBarDestination.Homepage.route) {
             HomepageScreen(onNavigate = { navController.navigate(it) })
