@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.myerasmus.R
@@ -41,11 +42,14 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Text("User Profile", style = MaterialTheme.typography.headlineLarge, color = Color.White)
-                    }
+                    Text(
+                        text = "User Profile",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 actions = {
                     IconButton(onClick = {
@@ -93,9 +97,10 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF003399))
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF003399))
             )
-        },
+        }
+        ,
         bottomBar = {
             CustomNavigationBar(
                 currentDestination = BottomBarDestination.Profile,
@@ -262,8 +267,7 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                            .padding(horizontal = 16.dp, vertical = 8.dp) // margini più contenuti
                     ) {
                         Text(
                             text = "Choose from gallery",
@@ -273,8 +277,12 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                                 .clickable {
                                     showEditOptions = false
                                     showProfilePreview = false
+                                    // TODO: apri galleria
                                 }
                         )
+
+                        Spacer(modifier = Modifier.height(32.dp)) // <-- solo spazio tra le due opzioni
+
                         Text(
                             text = "Delete",
                             style = MaterialTheme.typography.bodyLarge.copy(color = Color.Red),
@@ -283,28 +291,44 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                                 .clickable {
                                     showEditOptions = false
                                     showProfilePreview = false
+                                    // TODO: elimina immagine
                                 }
                         )
                     }
                 }
+
+
             }
 
             if (showLogoutDialog) {
                 Dialog(onDismissRequest = { showLogoutDialog = false }) {
-                    Surface(shape = MaterialTheme.shapes.medium, tonalElevation = 6.dp, modifier = Modifier.padding(24.dp)) {
+                    Surface(
+                        shape = MaterialTheme.shapes.medium,
+                        tonalElevation = 6.dp,
+                        modifier = Modifier.padding(24.dp)
+                    ) {
                         Column(modifier = Modifier.padding(24.dp)) {
                             Text("Are you sure you want to log out?", style = MaterialTheme.typography.headlineSmall)
                             Spacer(modifier = Modifier.height(24.dp))
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                // Ora Cancel è a sinistra
+                                TextButton(onClick = { showLogoutDialog = false }) {
+                                    Text("Cancel")
+                                }
                                 TextButton(onClick = {
                                     showLogoutDialog = false
                                     onNavigate("login")
-                                }) { Text("Confirm") }
-                                TextButton(onClick = { showLogoutDialog = false }) { Text("Cancel") }
+                                }) {
+                                    Text("Confirm")
+                                }
                             }
                         }
                     }
                 }
+
             }
 
             if (showCancelDialog) {
