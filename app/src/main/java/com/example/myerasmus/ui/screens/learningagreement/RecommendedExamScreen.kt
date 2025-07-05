@@ -21,7 +21,7 @@ import com.example.myerasmus.utils.HomeUniversityExam
 fun RecommendedExamScreen(
     hostExam: HostUniversityExam,
     laId: String,
-    onAccept: () -> Unit,
+    onViewExam: () -> Unit,
     onChooseAnother: (String) -> Unit,
     onBack: () -> Unit
 ){
@@ -79,8 +79,11 @@ fun RecommendedExamScreen(
                 }
             }
 
-            Button(onClick = { onAccept() }) {
-                Text("Accept Suggestion")
+            Button(
+                onClick = { onViewExam() },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF003399))
+            ) {
+                Text("View Exam")
             }
 
             Text(

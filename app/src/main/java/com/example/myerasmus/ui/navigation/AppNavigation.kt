@@ -252,31 +252,10 @@ fun AppNavigation(navController: NavHostController) {
                 RecommendedExamScreen(
                     hostExam = hostExam,
                     laId = laId,
-                    onAccept = {
-                        if (laId == "new") {
-                            val targetAgreement = newUnsavedAgreement ?: return@RecommendedExamScreen
-                            newUnsavedAgreement = targetAgreement.copy(
-                                associations = targetAgreement.associations + (hostExam to homeExam)
-                            )
-                            navController.navigate("learningAgreementEditor/new") {
-                                popUpTo("recommendedExam/$homeName/$hostName/$laId") { inclusive = true }
-                                launchSingleTop = true
-                            }
-
-                        } else {
-                            val id = laId.toIntOrNull() ?: return@RecommendedExamScreen
-                            val agreement = allLearningAgreements.find { it.id == id } ?: return@RecommendedExamScreen
-                            val updated = agreement.copy(
-                                associations = agreement.associations + (hostExam to homeExam)
-                            )
-                            allLearningAgreements.removeIf { it.id == id }
-                            allLearningAgreements.add(updated)
-                            navController.navigate("learningAgreementEditor/$id") {
-                                popUpTo("recommendedExam/$homeName/$hostName/$laId") { inclusive = true }
-                                launchSingleTop = true
-                            }
-
-                        }
+                    onViewExam = {
+                        navController.navigate(
+                            "examPage/${hostExam.name}?from=recommendedExam/${homeName}/${hostName}/${laId}&showAddToLaButton=${true}&laId=${laId}&homeExamName=${homeName}"
+                        )
                     },
                     onChooseAnother = { id ->
                         navController.navigate("chooseAnotherExam/${URLEncoder.encode(homeExam.name, "UTF-8")}/$id")
@@ -300,35 +279,14 @@ fun AppNavigation(navController: NavHostController) {
                 val homeExamName = URLDecoder.decode(backStackEntry.arguments?.getString("homeExamName") ?: "", "UTF-8")
                 val laId = backStackEntry.arguments?.getString("laId") ?: "new"
 
-                val homeExam = getAllHomeExams().find { it.name == homeExamName } ?: return@composable
-
                 ChooseAnotherExamScreen(
                     onBack = {
-                        navController.navigate("recommendedExam/${URLEncoder.encode(homeExam.name, "UTF-8")}/unused/$laId") {
-                            popUpTo("chooseAnotherExam/${URLEncoder.encode(homeExam.name, "UTF-8")}/$laId") { inclusive = true }
-                        }
+                        navController.popBackStack()
                     },
                     onExamSelected = { selectedHostExam ->
-                        if (laId == "new") {
-                            val targetAgreement = newUnsavedAgreement ?: return@ChooseAnotherExamScreen
-                            newUnsavedAgreement = targetAgreement.copy(
-                                associations = targetAgreement.associations + (selectedHostExam to homeExam)
-                            )
-                            navController.navigate("learningAgreementEditor/new") {
-                                popUpTo("chooseAnotherExam/${URLEncoder.encode(homeExam.name, "UTF-8")}/$laId") { inclusive = true }
-                            }
-                        } else {
-                            val id = laId.toIntOrNull() ?: return@ChooseAnotherExamScreen
-                            val agreement = allLearningAgreements.find { it.id == id } ?: return@ChooseAnotherExamScreen
-                            val updated = agreement.copy(
-                                associations = agreement.associations + (selectedHostExam to homeExam)
-                            )
-                            allLearningAgreements.removeIf { it.id == id }
-                            allLearningAgreements.add(updated)
-                            navController.navigate("learningAgreementEditor/$id") {
-                                popUpTo("chooseAnotherExam/${URLEncoder.encode(homeExam.name, "UTF-8")}/$laId") { inclusive = true }
-                            }
-                        }
+                        navController.navigate(
+                            "examPage/${selectedHostExam.name}?from=chooseAnotherExam/${homeExamName}/${laId}&showAddToLaButton=${true}&laId=${laId}&homeExamName=${homeExamName}"
+                        )
                     }
                 )
             }
@@ -371,20 +329,47 @@ fun AppNavigation(navController: NavHostController) {
             }
 
             composable(
-                route = "examPage/{examName}?from={source}",
+                route = "examPage/{examName}?from={source}&showAddToLaButton={isAddToLaButtonVisible}&laId={laId}&homeExamName={homeExamName}",
                 arguments = listOf(
                     navArgument("examName") { type = NavType.StringType },
                     navArgument("source") {
                         type = NavType.StringType
                         defaultValue = "default"
+                    },
+                    navArgument("isAddToLaButtonVisible") {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    },
+                    navArgument("laId") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                    navArgument("homeExamName") {
+                        type = NavType.StringType
+                        defaultValue = ""
                     }
                 )
             ) { backStackEntry ->
                 val examName = backStackEntry.arguments?.getString("examName") ?: ""
+                val showAddToLaButton = backStackEntry.arguments?.getBoolean("isAddToLaButtonVisible") == true
+                val learningAgreementId = backStackEntry.arguments?.getString("laId") ?: ""
+                val homeExamName = backStackEntry.arguments?.getString("homeExamName") ?: ""
+                val homeUniversityExam = getAllHomeExams().find { it.name == homeExamName }
+
                 ExamScreen(
                     examName = examName,
+                    showAddToLaButton = showAddToLaButton,
+                    learningAgreementId = learningAgreementId,
+                    homeUniversityExam = homeUniversityExam,
                     onBack = {
                         navController.popBackStack()
+                    },
+                    onExamAdded = {
+                        if (learningAgreementId == "new") {
+                            navController.navigate("learningAgreementEditor/new")
+                        } else {
+                            navController.navigate("learningAgreementEditor/${learningAgreementId.toInt()}")
+                        }
                     }
                 )
             }

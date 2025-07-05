@@ -10,6 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -29,12 +32,18 @@ import com.example.myerasmus.ui.components.CustomTopBar
 import com.example.myerasmus.ui.components.ReviewCard
 import com.example.myerasmus.utils.HomeUniversityExam
 import com.example.myerasmus.utils.HostUniversityExam
+import com.example.myerasmus.utils.allLearningAgreements
 import com.example.myerasmus.utils.examDescriptionRes
+import com.example.myerasmus.utils.newUnsavedAgreement
 
 @Composable
 fun ExamScreen(
     examName: String,
-    onBack: () -> Unit
+    homeUniversityExam: HomeUniversityExam?,
+    showAddToLaButton: Boolean,
+    learningAgreementId: String,
+    onBack: () -> Unit,
+    onExamAdded: () -> Unit
 ) {
     val examInfo = remember { CommonHelper.findExamByName(examName) }
     val reviewers = remember { CommonHelper.getReviewsForExam(examInfo.name) }
@@ -69,7 +78,22 @@ fun ExamScreen(
                     }
                 },
                 actions = {
-                    Spacer(modifier = Modifier.width(48.dp)) // per bilanciare la freccia
+                    if (showAddToLaButton) {
+                        IconButton(
+                            onClick = {
+                                //Shouldn't happen
+                                if (homeUniversityExam == null) {
+                                    throw Exception("Missing home university exam for associaton")
+                                }
+
+                                addExamToLa(learningAgreementId, examInfo, homeUniversityExam)
+                                onExamAdded()
+                            },
+                            colors = IconButtonDefaults.iconButtonColors(containerColor = Color(0xFF003399))
+                        ) {
+                            Icon(Icons.Default.Add, tint = Color.White, contentDescription = "Add")
+                        }
+                    }
                 }
             )
         }
@@ -174,4 +198,31 @@ fun ExamScreen(
             }
         }
     }
+}
+
+
+fun addExamToLa(learningAgreementId: String, hostUniversityExam: HostUniversityExam, homeUniversityExam: HomeUniversityExam) {
+    if (learningAgreementId == "new") {
+        val targetAgreement = newUnsavedAgreement
+        newUnsavedAgreement = targetAgreement?.copy(
+            associations = targetAgreement.associations + ( hostUniversityExam to homeUniversityExam)
+        )
+
+        return
+    }
+
+    val id = learningAgreementId.toInt()
+    val learningAgreement = allLearningAgreements.find { it.id == id }
+
+    //Shouldn't happen
+    if (learningAgreement == null) {
+        throw Exception("Can't find a learning a agreement")
+    }
+
+    val updatedAgreement = learningAgreement.copy(
+        associations = learningAgreement.associations + (hostUniversityExam to homeUniversityExam)
+    )
+
+    allLearningAgreements.removeIf { it.id == id }
+    allLearningAgreements.add(updatedAgreement)
 }
