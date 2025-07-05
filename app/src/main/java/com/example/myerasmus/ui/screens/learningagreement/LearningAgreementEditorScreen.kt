@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myerasmus.R
 import com.example.myerasmus.ui.components.CustomNavigationBar
+import com.example.myerasmus.ui.components.CustomTopBar
 import com.example.myerasmus.ui.components.enums.BottomBarDestination
 import com.example.myerasmus.utils.*
 import kotlinx.coroutines.launch
@@ -30,21 +34,6 @@ fun LearningAgreementEditorScreen(
     onNavigate: (String) -> Unit,
     onBack: () -> Unit
 ) {
-    val isNew = agreement == null
-    val initialState = agreement ?: newUnsavedAgreement ?: LearningAgreement(
-        id = -1,
-        title = "New Learning Agreement",
-        status = 0,
-        associations = emptyList()
-    )
-
-    var title by remember { mutableStateOf(initialState.title) }
-    var statusLevel by remember { mutableStateOf(initialState.status) }
-    val associations = remember {
-        mutableStateListOf<Pair<HostUniversityExam, HomeUniversityExam>>().apply {
-            addAll(initialState.associations)
-        }
-    }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -52,27 +41,68 @@ fun LearningAgreementEditorScreen(
     var showSendDialog by remember { mutableStateOf(false) }
     var showSentConfirmation by remember { mutableStateOf(false) }
 
-    if (isNew) {
-        newUnsavedAgreement = LearningAgreement(-1, title, statusLevel, associations)
+
+    val learningAgreement = agreement ?: newUnsavedAgreement ?: LearningAgreement(
+        id = -1,
+        title = "New Learning Agreement",
+        status = 0,
+        associations = emptyList()
+    )
+
+    var learningAgreementTitle by remember { mutableStateOf(learningAgreement.title) }
+    var learningAgreementStatusLabel by remember { mutableStateOf(setStatusLabel(learningAgreement)) }
+
+    //Track in a separate variable in order to update the UI in real-time
+    var statusLevel by remember { mutableStateOf(learningAgreement.status) }
+
+    val associations = remember {
+        mutableStateListOf<Pair<HostUniversityExam, HomeUniversityExam>>().apply {
+            addAll(learningAgreement.associations)
+        }
+    }
+
+    if (agreement == null) {
+        newUnsavedAgreement = LearningAgreement(-1, learningAgreementTitle, learningAgreement.status, associations)
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CustomTopBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Status", style = MaterialTheme.typography.titleLarge)
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Box(
-                            modifier = Modifier
-                                .size(18.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFF2196F3))
-                                .clickable { showStatusDialog = true },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("?", color = Color.White, style = MaterialTheme.typography.labelSmall)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = learningAgreementStatusLabel,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            IconButton(
+                                onClick = { showStatusDialog = true },
+                                modifier = Modifier.size(24.dp) // Shrink button padding
+                            ) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                        .clip(CircleShape)
+                                        .background(Color(0xFF2196F3))
+                                ) {
+                                    Text(
+                                        "?",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.labelSmall
+                                    )
+                                }
+                            }
                         }
+
                         if (showStatusDialog) {
                             AlertDialog(
                                 onDismissRequest = { showStatusDialog = false },
@@ -91,7 +121,7 @@ fun LearningAgreementEditorScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        if (initialState.id == -1 && newUnsavedAgreement != null) {
+                        if (learningAgreement.id == -1 && newUnsavedAgreement != null) {
                             val newId = nextLearningAgreementId++
                             val saved = newUnsavedAgreement!!.copy(id = newId)
                             allLearningAgreements.add(saved)
@@ -104,17 +134,19 @@ fun LearningAgreementEditorScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color(0xFF003399)
+                            tint = Color.White
                         )
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showSendDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowForward,
-                            contentDescription = "Send",
-                            tint = Color(0xFF003399)
-                        )
+                    if ((statusLevel == 0 || statusLevel == 2) && associations.isNotEmpty()) {
+                        IconButton(onClick = { showSendDialog = true }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = "Send",
+                                tint = Color.White
+                            )
+                        }
                     }
 
                     if (showSendDialog) {
@@ -122,8 +154,11 @@ fun LearningAgreementEditorScreen(
                             onDismissRequest = { showSendDialog = false },
                             confirmButton = {
                                 TextButton(onClick = {
+                                    statusLevel += 1
+                                    learningAgreement.status += 1
+                                    learningAgreementStatusLabel = setStatusLabel(learningAgreement)
+
                                     showSendDialog = false
-                                    if (statusLevel == 0) statusLevel = 1
                                     showSentConfirmation = true
                                 }) {
                                     Text("Yes")
@@ -138,8 +173,7 @@ fun LearningAgreementEditorScreen(
                             text = { Text("Do you want to send this Learning Agreement to prof@example.com?") }
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                }
             )
         },
         bottomBar = {
@@ -168,46 +202,48 @@ fun LearningAgreementEditorScreen(
                     )
                 }
 
-                FloatingActionButton(
-                    onClick = {
-                        if (initialState.id == -1) {
-                            val newId = nextLearningAgreementId++
-                            val newAgreement = LearningAgreement(
-                                id = newId,
-                                title = title,
-                                status = statusLevel,
-                                associations = associations.toList()
-                            )
-                            allLearningAgreements.add(newAgreement)
-                            newUnsavedAgreement = null
-                            onNavigate("learningAgreementHomepage?created=true")
-                        } else {
-                            val updated = initialState.copy(
-                                title = title,
-                                status = statusLevel,
-                                associations = associations.toList()
-                            )
-                            allLearningAgreements.removeIf { it.id == updated.id }
-                            allLearningAgreements.add(updated)
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("All changes have been saved.")
+                if (statusLevel == 0) {
+                    FloatingActionButton(
+                        onClick = {
+                            if (learningAgreement.id == -1) {
+                                val newId = nextLearningAgreementId++
+                                val newAgreement = LearningAgreement(
+                                    id = newId,
+                                    title = learningAgreementTitle,
+                                    status = statusLevel,
+                                    associations = associations.toList()
+                                )
+                                allLearningAgreements.add(newAgreement)
+                                newUnsavedAgreement = null
+                                onNavigate("learningAgreementHomepage?created=true")
+                            } else {
+                                val updated = learningAgreement.copy(
+                                    title = learningAgreementTitle,
+                                    status = statusLevel,
+                                    associations = associations.toList()
+                                )
+                                allLearningAgreements.removeIf { it.id == updated.id }
+                                allLearningAgreements.add(updated)
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("All changes have been saved.")
+                                }
+                                onNavigate("learningAgreementHomepage")
                             }
-                            onNavigate("learningAgreementHomepage")
-                        }
-                    },
-                    containerColor = Color(0xFF4CAF50)
-                ) {
-                    Icon(Icons.Default.Save, contentDescription = "Save", tint = Color.White)
-                }
+                        },
+                        containerColor = Color(0xFF4CAF50)
+                    ) {
+                        Icon(Icons.Default.Save, contentDescription = "Save", tint = Color.White)
+                    }
 
-                FloatingActionButton(
-                    onClick = {
-                        val laId = if (initialState.id == -1) "new" else initialState.id.toString()
-                        onNavigate("selectHomeExam/$laId")
-                    },
-                    containerColor = Color(0xFF2196F3)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                    FloatingActionButton(
+                        onClick = {
+                            val laId = if (learningAgreement.id == -1) "new" else learningAgreement.id.toString()
+                            onNavigate("selectHomeExam/$laId")
+                        },
+                        containerColor = Color(0xFF2196F3)
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                    }
                 }
             }
         },
@@ -227,8 +263,8 @@ fun LearningAgreementEditorScreen(
                 .padding(16.dp)
         ) {
             OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
+                value = learningAgreementTitle,
+                onValueChange = { learningAgreementTitle = it },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -248,14 +284,21 @@ fun LearningAgreementEditorScreen(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text("${hostExam.name} (${hostExam.ects} ECTS)", style = MaterialTheme.typography.titleMedium)
+                            Text(hostExam.courseCode, style = MaterialTheme.typography.titleMedium)
                             Text("↕", color = Color.Gray)
                             Text("${homeExam.name} (${homeExam.cfu} CFU)")
+                            Text(homeExam.courseCode)
                         }
-                        Row {
-                            IconButton(onClick = {
-                                associations.remove(Pair(hostExam, homeExam))
-                            }) {
-                                Icon(Icons.Default.Delete, contentDescription = "Delete")
+
+                        when {
+                            statusLevel == 0 -> {
+                                Row {
+                                    IconButton(onClick = {
+                                        associations.remove(Pair(hostExam, homeExam))
+                                    }) {
+                                        Icon(Icons.Default.Delete, contentDescription = "Delete")
+                                    }
+                                }
                             }
                         }
                     }
@@ -297,9 +340,10 @@ fun LearningAgreementEditorScreen(
 fun LearningAgreementStatusStepper(statusLevel: Int) {
     val steps = listOf(
         "Not Sent",
-        "Sent",
-        "Approved by Home University",
-        "Approved by Host University"
+        "Sent to Home Coordinator",
+        "Approved by Home Coordinator",
+        "Sent to Host Coordinator",
+        "Approved by Host Coordinator"
     )
 
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
@@ -334,4 +378,25 @@ fun LearningAgreementStatusStepper(statusLevel: Int) {
             }
         }
     }
+}
+
+fun setStatusLabel(selectedLearningAgreement: LearningAgreement) : String {
+    //The LA still needs to be sent
+    if (selectedLearningAgreement.status == 0) {
+        return "Drafting"
+    }
+
+    if (selectedLearningAgreement.status == 1 || selectedLearningAgreement.status == 3) {
+        return "Sent"
+    }
+
+    if (selectedLearningAgreement.status == 2) {
+        return "Approved by Home Coordinator"
+    }
+
+    if (selectedLearningAgreement.status == 4) {
+        return "Approved by Host Coordinator"
+    }
+
+    return "Status"
 }

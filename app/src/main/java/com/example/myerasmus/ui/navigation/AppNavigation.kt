@@ -251,7 +251,6 @@ fun AppNavigation(navController: NavHostController) {
 
                 RecommendedExamScreen(
                     hostExam = hostExam,
-                    homeExam = homeExam,
                     laId = laId,
                     onAccept = {
                         if (laId == "new") {

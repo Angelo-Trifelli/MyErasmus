@@ -20,7 +20,6 @@ import com.example.myerasmus.utils.HomeUniversityExam
 @Composable
 fun RecommendedExamScreen(
     hostExam: HostUniversityExam,
-    homeExam: HomeUniversityExam,
     laId: String,
     onAccept: () -> Unit,
     onChooseAnother: (String) -> Unit,
@@ -70,6 +69,8 @@ fun RecommendedExamScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(hostExam.name, style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(hostExam.courseCode, style = MaterialTheme.typography.bodyLarge)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text("${hostExam.ects} ECTS", style = MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.height(4.dp))

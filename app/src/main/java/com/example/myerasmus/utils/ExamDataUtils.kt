@@ -12,7 +12,8 @@ data class HomeUniversityExam(
     override val code: String,
     override val name: String,
     override val descriptionRes: Int,
-    val cfu: Int
+    val cfu: Int,
+    val courseCode: String
 ) : Exam(code, name, descriptionRes)
 
 data class HostUniversityExam(
@@ -25,6 +26,7 @@ data class HostUniversityExam(
     val faculty: String,
     val department: String,
     val course: String,
+    val courseCode: String,
     val year: String,
     val semester: String,
     val language: String,
@@ -35,8 +37,8 @@ data class HostUniversityExam(
 data class LearningAgreement(
     val id: Int,
     val title: String,
-    val status: Int = 0,
-    val associations: List<Pair<HostUniversityExam, HomeUniversityExam>>
+    var status: Int = 0,
+    var associations: List<Pair<HostUniversityExam, HomeUniversityExam>>
 )
 
 data class TimeSlot(
@@ -69,56 +71,56 @@ var nextLearningAgreementId = 3
 var newUnsavedAgreement: LearningAgreement? = null
 
 fun getAllHomeExams(): List<HomeUniversityExam> = listOf(
-    HomeUniversityExam("H01", "Mathematics", R.string.math_description, 6),
-    HomeUniversityExam("H02", "Business Economics", R.string.business_economics_description, 6),
-    HomeUniversityExam("H03", "Statistics", R.string.statistics_description, 6),
-    HomeUniversityExam("H04", "Accounting", R.string.accounting_description, 9),
-    HomeUniversityExam("H05", "Corporate Finance", R.string.corporate_finance_description, 6),
-    HomeUniversityExam("H06", "Marketing", R.string.marketing_description, 6),
-    HomeUniversityExam("H07", "Organizational Behavior", R.string.organizational_behavior_description, 6),
-    HomeUniversityExam("H08", "Public Law", R.string.public_law_description, 6),
-    HomeUniversityExam("H09", "European Institutions", R.string.european_institutions_description, 3),
-    HomeUniversityExam("H10", "Microeconomics", R.string.microeconomics_description, 6)
+    HomeUniversityExam("H01", "Mathematics", R.string.math_description, 6, "1044417"),
+    HomeUniversityExam("H02", "Business Economics", R.string.business_economics_description, 6, "1044418"),
+    HomeUniversityExam("H03", "Statistics", R.string.statistics_description, 6, "1044419"),
+    HomeUniversityExam("H04", "Accounting", R.string.accounting_description, 9, "1044420"),
+    HomeUniversityExam("H05", "Corporate Finance", R.string.corporate_finance_description, 6, "1044421"),
+    HomeUniversityExam("H06", "Marketing", R.string.marketing_description, 6, "1044422"),
+    HomeUniversityExam("H07", "Organizational Behavior", R.string.organizational_behavior_description, 6, "1044423"),
+    HomeUniversityExam("H08", "Public Law", R.string.public_law_description, 6, "1044424"),
+    HomeUniversityExam("H09", "European Institutions", R.string.european_institutions_description, 3, "1044425"),
+    HomeUniversityExam("H10", "Microeconomics", R.string.microeconomics_description, 6, "1044426")
 )
 
 fun getAllHostExams(): List<HostUniversityExam> = listOf(
     HostUniversityExam("F01", "Macroeconomics I", R.string.macroeconomics_description, 6, listOf(
         TimeSlot(1, 10, 2), TimeSlot(3, 12, 2), TimeSlot(4, 8, 2)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "1°", "1°", "ESP", "Javier Ruiz", "javier.ruiz@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "000001", "1°", "1°", "ESP", "Javier Ruiz", "javier.ruiz@ub.edu"),
 
     HostUniversityExam("F02", "Regional and Local Finance", R.string.regiona_and_local_finance_description, 6, listOf(
         TimeSlot(2, 10, 3), TimeSlot(5, 9, 3)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "2°", "2°", "ENG", "Carmen Ortega", "carmen.ortega@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "000002", "2°", "2°", "ENG", "Carmen Ortega", "carmen.ortega@ub.edu"),
 
     HostUniversityExam("F03", "International Marketing", R.string.international_marketing_description, 6, listOf(
         TimeSlot(1, 8, 3), TimeSlot(4, 11, 3)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "3°", "1°", "ENG", "Laura Díaz", "laura.diaz@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "000003", "3°", "1°", "ENG", "Laura Díaz", "laura.diaz@ub.edu"),
 
     HostUniversityExam("F04", "Development Economics", R.string.development_economics_description, 6, listOf(
         TimeSlot(2, 9, 2), TimeSlot(3, 14, 2), TimeSlot(5, 8, 2)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "2°", "1°", "ESP", "Miguel Torres", "miguel.torres@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "000004", "2°", "1°", "ESP", "Miguel Torres", "miguel.torres@ub.edu"),
 
     HostUniversityExam("F05", "Behavioral Finance", R.string.behavioral_finance_description, 6, listOf(
         TimeSlot(1, 15, 3), TimeSlot(3, 10, 3)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "3°", "2°", "ENG", "Elena Gómez", "elena.gomez@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Economics", "000005", "3°", "2°", "ENG", "Elena Gómez", "elena.gomez@ub.edu"),
 
     HostUniversityExam("F06", "Data Analysis", R.string.data_analysis_description, 6, listOf(
         TimeSlot(2, 12, 2), TimeSlot(4, 10, 2), TimeSlot(5, 9, 2)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "1°", "1°", "ENG", "Antonio Ricci", "antonio.ricci@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "000006", "1°", "1°", "ENG", "Antonio Ricci", "antonio.ricci@ub.edu"),
 
     HostUniversityExam("F07", "Human Resource Management", R.string.hrm_description, 6, listOf(
         TimeSlot(3, 11, 3), TimeSlot(4, 14, 3)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "2°", "2°", "ESP", "Lucía Moreno", "lucia.moreno@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "000007", "2°", "2°", "ESP", "Lucía Moreno", "lucia.moreno@ub.edu"),
 
     HostUniversityExam("F08", "International Relations", R.string.international_relations_description, 6, listOf(
         TimeSlot(1, 13, 2), TimeSlot(2, 10, 2), TimeSlot(5, 11, 2)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "3°", "2°", "ENG", "Carlos Vidal", "carlos.vidal@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "000008", "3°", "2°", "ENG", "Carlos Vidal", "carlos.vidal@ub.edu"),
 
     HostUniversityExam("F09", "Strategic Management", R.string.strategic_management_description, 6, listOf(
         TimeSlot(2, 14, 3), TimeSlot(4, 9, 3)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "2°", "1°", "ENG", "Marta Escribà", "marta.escriba@ub.edu"),
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "000009", "2°", "1°", "ENG", "Marta Escribà", "marta.escriba@ub.edu"),
 
     HostUniversityExam("F10", "Entrepreneurship", R.string.entrepreneurship_description, 6, listOf(
         TimeSlot(1, 11, 2), TimeSlot(3, 15, 2), TimeSlot(5, 10, 2)
-    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "1°", "2°", "ESP", "Andrés Blanco", "andres.blanco@ub.edu")
+    ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "000010", "1°", "2°", "ESP", "Andrés Blanco", "andres.blanco@ub.edu")
 )

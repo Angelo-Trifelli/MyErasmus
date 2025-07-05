@@ -90,11 +90,11 @@ fun LearningAgreementScreen(
                         .height(80.dp)
                         .background(Color(0xFFBA68C8), shape = RoundedCornerShape(12.dp))
                         .clickable {
-                            val hasApproved = allLearningAgreements.any { it.status == 3 }
+                            val hasApproved = allLearningAgreements.any { it.status == 4 }
                             if (!hasApproved) {
                                 coroutineScope.launch {
                                     snackbarHostState.showSnackbar(
-                                        "You need a LA with “Approved By Host University” status."
+                                        "You need a LA with “Approved By Host Coordinator” status"
                                     )
                                 }
                             } else {
