@@ -21,8 +21,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.withStyle
+import com.example.myerasmus.ui.components.SelectField
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +49,8 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+
+    var invalidInstitutionalEmail = remember { mutableStateOf(false) }
 
     // Date Picker
     val calendar = Calendar.getInstance()
@@ -75,12 +79,13 @@ fun RegisterScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 80.dp)
+            modifier = Modifier.padding(top = 32.dp)
         ) {
             Text(
                 text = "Create an account",
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color =  Color(0xFF003399)
             )
         }
 
@@ -105,65 +110,39 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Birth Date & Country Row
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = birthDate,
-                    onValueChange = {},
-                    label = { Text("Birth Date") },
-                    trailingIcon = {
-                        IconButton(onClick = { datePicker.show() }) {
-                            Icon(Icons.Default.CalendarToday, contentDescription = null)
-                        }
-                    },
-                    readOnly = true,
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(20.dp),
-                    singleLine = true
-                )
-
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    OutlinedTextField(
-                        value = country,
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Country") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor(),
-                        shape = RoundedCornerShape(20.dp),
-                        singleLine = true
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        countries.forEach { selectionOption ->
-                            DropdownMenuItem(
-                                text = { Text(selectionOption) },
-                                onClick = {
-                                    country = selectionOption
-                                    expanded = false
-                                }
-                            )
-                        }
+            OutlinedTextField(
+                value = birthDate,
+                onValueChange = {},
+                label = { Text("Birth Date (DD/MM/YYYY)") },
+                trailingIcon = {
+                    IconButton(onClick = { datePicker.show() }) {
+                        Icon(Icons.Default.CalendarToday, contentDescription = null)
                     }
-                }
-            }
+                },
+                placeholder = { Text("DD/MM/YYYY") },
+                readOnly = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SelectField(
+                label = { Text("Country") },
+                menuOptions = countries,
+                selectedOption = country,
+                onOptionSelection = { country = it },
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("E-mail") },
+                label = { Text("Institutional E-mail") },
+                placeholder = { Text("Your institutional E-mail") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 singleLine = true
@@ -223,7 +202,12 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { onRegisterSuccess() },
+                onClick = {
+                    if (isRegistrationValid(email, invalidInstitutionalEmail)) {
+                        onRegisterSuccess()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF003399)),
                 enabled = name.isNotBlank() && lastName.isNotBlank() &&
                         birthDate.isNotBlank() && country.isNotBlank() &&
                         email.isNotBlank() && studentId.isNotBlank() &&
@@ -231,6 +215,21 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Register")
+            }
+
+            when {
+                invalidInstitutionalEmail.value -> {
+                    AlertDialog(
+                        onDismissRequest = { invalidInstitutionalEmail.value = true },
+                        confirmButton = {
+                            TextButton(onClick = { invalidInstitutionalEmail.value = false }) {
+                                Text("Ok")
+                            }
+                        },
+                        title = { Text("Warning", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+                        text = { Text("Please insert a valid institutional email") }
+                    )
+                }
             }
         }
 
@@ -256,4 +255,24 @@ fun RegisterScreen(
             )
         }
     }
+}
+
+
+fun isRegistrationValid(email: String, invalidInstitutionalEmail: MutableState<Boolean>) : Boolean {
+    val validEmailSuffix = listOf("studenti.uniroma1.it", "studio.unibo.it", "ub.edu")
+    var isValidSuffixPresent = false
+
+    for (elem in validEmailSuffix) {
+        if (email.endsWith(elem)) {
+            isValidSuffixPresent = true
+            break
+        }
+    }
+
+    if (!isValidSuffixPresent) {
+        invalidInstitutionalEmail.value = true
+        return false
+    }
+
+    return true
 }

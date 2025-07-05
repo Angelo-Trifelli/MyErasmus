@@ -37,7 +37,7 @@ fun ExamFilterWindow (
         modifier = modifier.padding(horizontal = 16.dp)
     ) {
         SelectField(
-            label = "University",
+            label = { Text("University", style = MaterialTheme.typography.bodySmall) },
             menuOptions = listOf("Universitat de Barcelona"),
             selectedOption = state.value.university,
             onOptionSelection = { state.value = state.value.copy(university = it) },
@@ -45,7 +45,7 @@ fun ExamFilterWindow (
         )
 
         SelectField(
-            label = "Faculty",
+            label = { Text("Faculty", style = MaterialTheme.typography.bodySmall) },
             menuOptions = listOf("Faculty of Economics and Business"),
             selectedOption = state.value.faculty,
             onOptionSelection = { state.value = state.value.copy(faculty = it) },
@@ -54,7 +54,7 @@ fun ExamFilterWindow (
         )
 
         SelectField(
-            label = "Department",
+            label = { Text("Department", style = MaterialTheme.typography.bodySmall) },
             menuOptions = listOf("Department of Economics"),
             selectedOption = state.value.department,
             onOptionSelection = { state.value = state.value.copy(department = it) },
@@ -63,7 +63,7 @@ fun ExamFilterWindow (
         )
 
         SelectField(
-            label = "Course",
+            label = { Text("Course", style = MaterialTheme.typography.bodySmall) },
             menuOptions = listOf("Economics", "Business Administration and Management"),
             selectedOption = state.value.course,
             onOptionSelection = { state.value = state.value.copy(course = it) },
@@ -80,7 +80,7 @@ fun ExamFilterWindow (
                 modifier = Modifier.fillMaxWidth()
             ) {
                 SelectField(
-                    label = "Year",
+                    label = { Text("Year", style = MaterialTheme.typography.bodySmall) },
                     menuOptions = listOf("1°", "2°", "3°"),
                     selectedOption = state.value.year,
                     onOptionSelection = { state.value = state.value.copy(year = it) },
@@ -89,7 +89,7 @@ fun ExamFilterWindow (
                 )
 
                 SelectField(
-                    label = "Semester",
+                    label = { Text("Semester", style = MaterialTheme.typography.bodySmall) },
                     menuOptions = listOf("1°", "2°"),
                     selectedOption = state.value.semester,
                     onOptionSelection = { state.value = state.value.copy(semester = it) },
@@ -118,7 +118,7 @@ fun ExamFilterWindow (
                 )
 
                 SelectField(
-                    label = "Language",
+                    label = { Text("Language", style = MaterialTheme.typography.bodySmall) },
                     menuOptions = listOf("ESP", "ENG"),
                     selectedOption = state.value.language,
                     onOptionSelection = { state.value = state.value.copy(language = it) },

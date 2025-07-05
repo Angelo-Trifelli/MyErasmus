@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectField(
-    label: String,
+    label: @Composable () -> Unit,
     menuOptions: List<String>,
     selectedOption: String,
     onOptionSelection: (String) -> Unit,
@@ -36,7 +36,7 @@ fun SelectField(
             value = selectedOption,
             onValueChange = {},
             readOnly = true,
-            label = { Text(text = label, style = MaterialTheme.typography.bodySmall) },
+            label = label,
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
