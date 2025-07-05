@@ -280,6 +280,7 @@ fun AppNavigation(navController: NavHostController) {
                 val laId = backStackEntry.arguments?.getString("laId") ?: "new"
 
                 ChooseAnotherExamScreen(
+                    learningAgreementId = laId,
                     onBack = {
                         navController.popBackStack()
                     },

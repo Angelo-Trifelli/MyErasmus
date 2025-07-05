@@ -4,11 +4,14 @@ package com.example.myerasmus.ui.screens.learningagreement
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myerasmus.utils.HostUniversityExam
 import com.example.myerasmus.utils.HomeUniversityExam
+import com.example.myerasmus.utils.hasOverlappingHours
 
 @Composable
 fun RecommendedExamScreen(
@@ -25,6 +29,8 @@ fun RecommendedExamScreen(
     onChooseAnother: (String) -> Unit,
     onBack: () -> Unit
 ){
+    val hasOverlappingHours = remember { mutableStateOf(hasOverlappingHours(laId, hostExam)) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -76,6 +82,19 @@ fun RecommendedExamScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text("Professor: ${hostExam.professorFullName}", style = MaterialTheme.typography.bodySmall)
                     Text(hostExam.professorEmail, style = MaterialTheme.typography.bodySmall)
+                }
+            }
+
+            if (hasOverlappingHours.value) {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "Attention: this exam has schedule conflicts with exams already added in your learning agreement.",
+                        color = Color.Red
+                    )
                 }
             }
 

@@ -17,15 +17,21 @@ import com.example.myerasmus.utils.getAllHostExams
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.foundation.*
+import androidx.compose.ui.text.style.TextAlign
+import com.example.myerasmus.utils.hasOverlappingHours
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChooseAnotherExamScreen(
+    learningAgreementId: String,
     onBack: () -> Unit,
     onExamSelected: (HostUniversityExam) -> Unit
 ) {
     val examFilterState = remember { mutableStateOf(ExamFilterState()) }
+    var selectedExam: HostUniversityExam? by remember { mutableStateOf(null)}
+    var showOverlappingHoursWarning = remember { mutableStateOf(false) }
+
     val allExams = getAllHostExams()
 
     val filter = examFilterState.value
@@ -71,7 +77,14 @@ fun ChooseAnotherExamScreen(
                         colors = CardDefaults.cardColors(containerColor = Color.White),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onExamSelected(exam) }
+                            .clickable {
+                                if (hasOverlappingHours(learningAgreementId, exam)) {
+                                    showOverlappingHoursWarning.value = true
+                                    selectedExam = exam
+                                } else {
+                                    onExamSelected(exam)
+                                }
+                            }
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(text = exam.name, style = MaterialTheme.typography.titleMedium)
@@ -80,6 +93,33 @@ fun ChooseAnotherExamScreen(
                         }
                     }
                 }
+            }
+
+            if (showOverlappingHoursWarning.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showOverlappingHoursWarning.value = false
+                        selectedExam = null
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showOverlappingHoursWarning.value = false
+                            selectedExam = null
+                        }) {
+                            Text("Cancel")
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showOverlappingHoursWarning.value = false
+                            selectedExam?.let { onExamSelected(it) }
+                        }) {
+                            Text("Continue")
+                        }
+                    },
+                    title = { Text("Schedule Conflict", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+                    text = { Text("Attention: this exam has schedule conflicts with exams already added in your learning agreement. Do you want to continue anyway?") }
+                )
             }
         }
     }

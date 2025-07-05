@@ -124,3 +124,38 @@ fun getAllHostExams(): List<HostUniversityExam> = listOf(
         TimeSlot(1, 11, 2), TimeSlot(3, 15, 2), TimeSlot(5, 10, 2)
     ), "Universitat de Barcelona", "Faculty of Economics and Business", "Department of Economics", "Business Administration and Management", "000010", "1°", "2°", "ESP", "Andrés Blanco", "andres.blanco@ub.edu")
 )
+
+
+fun hasOverlappingHours(learningAgreementId: String, selectedHostUniversityExam: HostUniversityExam) : Boolean {
+    var learningAgreement : LearningAgreement?
+
+    if (learningAgreementId == "new") {
+        learningAgreement = newUnsavedAgreement
+    } else {
+        val id = learningAgreementId.toInt()
+        learningAgreement = allLearningAgreements.find { it.id == id }
+    }
+
+    if (learningAgreement == null) {
+        throw Exception("Couldn't load learning agreement")
+    }
+
+    for (insertedAssociation in learningAgreement.associations) {
+        for (existingTimeSlot in insertedAssociation.first.schedule) {
+            for (newTimeSlot in selectedHostUniversityExam.schedule) {
+                if (existingTimeSlot.dayOfWeek == newTimeSlot.dayOfWeek) {
+                    var existingTimeSlotStart = existingTimeSlot.startHour
+                    var existingTimeSlotEnd = existingTimeSlot.startHour + existingTimeSlot.duration
+                    var newTimeSlotStart = newTimeSlot.startHour
+                    var newTimeSlotEnd = newTimeSlot.startHour + newTimeSlot.duration
+
+                    if (existingTimeSlotStart < newTimeSlotEnd && newTimeSlotStart < existingTimeSlotEnd) {
+                        return true
+                    }
+                }
+            }
+        }
+    }
+
+    return false
+}
