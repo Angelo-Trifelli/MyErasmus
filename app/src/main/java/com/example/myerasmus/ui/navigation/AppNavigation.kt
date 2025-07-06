@@ -16,10 +16,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.myerasmus.ui.classes.CommonHelper
 import com.example.myerasmus.ui.components.enums.BottomBarDestination
 import com.example.myerasmus.ui.screens.authentication.ForgotPasswordScreen
 import com.example.myerasmus.ui.screens.authentication.LoginScreen
 import com.example.myerasmus.ui.screens.authentication.RegisterScreen
+import com.example.myerasmus.ui.screens.exam.AddReviewScreen
 import com.example.myerasmus.ui.screens.exam.ExamScreen
 import com.example.myerasmus.ui.screens.exam.FindExamPage
 import com.example.myerasmus.ui.screens.homepage.HomepageScreen
@@ -392,18 +394,54 @@ fun AppNavigation(navController: NavHostController) {
                     showAddToLaButton = showAddToLaButton,
                     learningAgreementId = learningAgreementId,
                     homeUniversityExam = homeUniversityExam,
-                    onBack = {
-                        navController.popBackStack()
-                    },
+                    onBack = { navController.popBackStack() },
                     onExamAdded = {
                         if (learningAgreementId == "new") {
                             navController.navigate("learningAgreementEditor/new")
                         } else {
                             navController.navigate("learningAgreementEditor/${learningAgreementId.toInt()}?isUploaded=${false}")
                         }
+                    },
+                    onAddReview = { prefillRating, prefillText ->
+                        val encodedExam = URLEncoder.encode(examName, "UTF-8")
+                        val encodedRating = prefillRating?.toString() ?: "0"
+                        val encodedText = URLEncoder.encode(prefillText ?: "", "UTF-8")
+                        navController.navigate("addReview/$encodedExam/$encodedRating/$encodedText")
                     }
+
+
                 )
             }
+
+            composable(
+                route = "addReview/{examName}/{rating}/{text}",
+                arguments = listOf(
+                    navArgument("examName") { type = NavType.StringType },
+                    navArgument("rating") { type = NavType.StringType },
+                    navArgument("text") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val examName = URLDecoder.decode(backStackEntry.arguments?.getString("examName") ?: "", "UTF-8")
+                val rating = backStackEntry.arguments?.getString("rating")?.toIntOrNull() ?: 0
+                val text = URLDecoder.decode(backStackEntry.arguments?.getString("text") ?: "", "UTF-8")
+
+                AddReviewScreen(
+                    onSaveReview = { newRating, newText ->
+                        CommonHelper.addReview(
+                            examName = examName,
+                            rating = newRating,
+                            reviewText = newText
+                        )
+                        navController.popBackStack()
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    prefillRating = rating,
+                    prefillText = text
+                )
+            }
+
 
             composable("createGroup") {
                 CreateGroupScreen(

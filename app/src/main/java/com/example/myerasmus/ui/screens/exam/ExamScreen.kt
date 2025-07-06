@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -31,6 +32,12 @@ import com.example.myerasmus.utils.HostUniversityExam
 import com.example.myerasmus.utils.allLearningAgreements
 import com.example.myerasmus.utils.examDescriptionRes
 import com.example.myerasmus.utils.newUnsavedAgreement
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.filled.Delete
+
 
 @Composable
 fun ExamScreen(
@@ -39,10 +46,14 @@ fun ExamScreen(
     showAddToLaButton: Boolean,
     learningAgreementId: String,
     onBack: () -> Unit,
-    onExamAdded: () -> Unit
+    onExamAdded: () -> Unit,
+    onAddReview: (prefillRating: Int?, prefillText: String?) -> Unit
 ) {
     val examInfo = remember { CommonHelper.findExamByName(examName) }
-    val reviewers = remember { CommonHelper.getReviewsForExam(examInfo.name) }
+    var reviews by remember { mutableStateOf(CommonHelper.getReviewsForExam(examInfo.name)) }
+    var hasUserReview by remember { mutableStateOf(CommonHelper.hasUserReview(examInfo.name)) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     val imageId = remember { CommonHelper.profileImageRes(examInfo.professorFullName) }
     val descriptionId = remember { examDescriptionRes(examInfo.name) }
     val scrollState = rememberScrollState()
@@ -51,10 +62,7 @@ fun ExamScreen(
         topBar = {
             CustomTopBar(
                 title = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Text(
                             text = examInfo.name,
                             style = MaterialTheme.typography.headlineSmall,
@@ -66,20 +74,14 @@ fun ExamScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Go Back",
-                            tint = Color.White
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go Back", tint = Color.White)
                     }
                 },
                 actions = {
                     if (showAddToLaButton) {
                         IconButton(
                             onClick = {
-                                if (homeUniversityExam == null) {
-                                    throw Exception("Missing home university exam for association")
-                                }
+                                if (homeUniversityExam == null) throw Exception("Missing home university exam")
                                 addExamToLa(learningAgreementId, examInfo, homeUniversityExam)
                                 onExamAdded()
                             },
@@ -95,110 +97,141 @@ fun ExamScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxSize()
                 .verticalScroll(scrollState)
                 .padding(horizontal = 16.dp)
+                .fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
             // --- Professor Info ---
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
+                Image(
+                    painter = painterResource(id = imageId),
+                    contentDescription = "Professor",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(150.dp)
                         .clip(CircleShape)
-                        .border(width = 5.dp, color = Color(0xFFFFCC00), shape = CircleShape)
-                ) {
-                    Image(
-                        painter = painterResource(id = imageId),
-                        contentDescription = "Professor Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize().clip(CircleShape)
-                    )
-                }
-
+                        .border(5.dp, Color(0xFFFFCC00), CircleShape)
+                )
                 Column {
-                    Text(
-                        text = examInfo.professorFullName,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = examInfo.professorEmail,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp)) // spazio aggiunto tra blocchi
-
-                    Text(
-                        text = "Code: ${examInfo.courseCode}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Text(text = examInfo.professorFullName, style = MaterialTheme.typography.headlineSmall)
+                    Spacer(Modifier.height(4.dp))
+                    Text(text = examInfo.professorEmail, style = MaterialTheme.typography.bodyLarge)
+                    Spacer(Modifier.height(12.dp))
+                    Text("Code: ${examInfo.courseCode}", fontWeight = FontWeight.Medium)
                     val credits = when (examInfo) {
                         is HomeUniversityExam -> examInfo.cfu
                         is HostUniversityExam -> examInfo.ects
                         else -> 0
                     }
-                    Text(
-                        text = "$credits Credits",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Text("$credits Credits", style = MaterialTheme.typography.bodyLarge)
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
             // --- Description ---
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF003399)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            Text("Description", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, color = Color(0xFF003399)))
+            Spacer(Modifier.height(8.dp))
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, Color.Gray)
-                    .padding(8.dp)
+                modifier = Modifier.fillMaxWidth().border(1.dp, Color.Gray).padding(8.dp)
             ) {
-                Text(
-                    text = stringResource(id = descriptionId),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.DarkGray
-                )
+                Text(text = stringResource(id = descriptionId), color = Color.DarkGray)
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(Modifier.height(32.dp))
 
-            // --- Reviews ---
-            Text(
-                text = "Student Reviews",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF003399)
+            // --- Reviews Header ---
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Student Reviews", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, color = Color(0xFF003399)))
+                if (!hasUserReview) {
+                    IconButton(onClick = { onAddReview(null, null) }) {
+                        Icon(Icons.Default.Add, contentDescription = "Add Review", tint = Color(0xFF003399))
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // --- Review Cards ---
+            reviews.forEachIndexed { index, (name, rating, content) ->
+                val text = when (content) {
+                    is Int -> stringResource(id = content)
+                    is String -> content
+                    else -> ""
+                }
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    ReviewCard(
+                        studentName = name,
+                        rating = rating,
+                        reviewText = text,
+                        studentImage = CommonHelper.reviewerImageRes(name),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    if (name == "Anna Ruzzoli") {
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
+                        ) {
+                            IconButton(onClick = {
+                                onAddReview(rating, text)
+                            }) {
+                                Icon(Icons.Default.Edit, contentDescription = "Edit Review", tint = Color(0xFF003399))
+                            }
+                            IconButton(onClick = {
+                                showDeleteDialog = true
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Delete Review", tint = Color.Red)
+                            }
+                        }
+                    }
+                }
+
+                if (index != reviews.lastIndex) Spacer(Modifier.height(12.dp))
+            }
+
+            Spacer(Modifier.height(32.dp))
+        }
+
+        // --- Dialog: Conferma Eliminazione ---
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        CommonHelper.deleteReview(examInfo.name)
+                        reviews = CommonHelper.getReviewsForExam(examInfo.name)
+                        hasUserReview = false
+                        showDeleteDialog = false
+                    }) {
+                        Text("Delete", color = Color.Red)
+                    }
+
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Cancel")
+                    }
+                },
+                title = { Text("Delete Review?") },
+                text = { Text("Are you sure you want to delete your review?") }
             )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            for ((name, rating, textRes) in reviewers) {
-                ReviewCard(
-                    studentName = name,
-                    rating = rating,
-                    reviewText = stringResource(id = textRes),
-                    studentImage = CommonHelper.reviewerImageRes(name)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
+
 
 fun addExamToLa(learningAgreementId: String, hostUniversityExam: HostUniversityExam, homeUniversityExam: HomeUniversityExam) {
     if (learningAgreementId == "new") {
