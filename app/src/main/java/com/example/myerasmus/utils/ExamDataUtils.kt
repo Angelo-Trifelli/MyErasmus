@@ -36,7 +36,7 @@ data class HostUniversityExam(
 
 data class LearningAgreement(
     val id: Int,
-    val title: String,
+    var title: String,
     var status: Int = 0,
     var associations: List<Pair<HostUniversityExam, HomeUniversityExam>>
 )
@@ -63,6 +63,15 @@ val allLearningAgreements = mutableListOf(
             getAllHostExams().first { it.code == "F06" } to getAllHomeExams().first { it.code == "H03" },
             getAllHostExams().first { it.code == "F07" } to getAllHomeExams().first { it.code == "H06" },
             getAllHostExams().first { it.code == "F08" } to getAllHomeExams().first { it.code == "H10" }
+        )
+    ),
+    LearningAgreement(
+        id = 3,
+        title = "Learning Agreement 3",
+        status = 4,
+        associations = listOf(
+            getAllHostExams().first { it.code == "F06" } to getAllHomeExams().first { it.code == "H03" },
+            getAllHostExams().first { it.code == "F07" } to getAllHomeExams().first { it.code == "H06" }
         )
     )
 )

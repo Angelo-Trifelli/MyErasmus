@@ -61,7 +61,14 @@ fun AppNavigation(navController: NavHostController) {
             }
 
             composable(BottomBarDestination.LearningAgreementHomepage.route) {
-                LearningAgreementScreen(onNavigate = { navController.navigate(it) })
+                LearningAgreementScreen(
+                    onNavigate = {
+                        navController.navigate(it)
+                    },
+                    onUpload = { uploadedAgreement ->
+                        navController.navigate("learningAgreementEditor/${uploadedAgreement.id}?isUploaded=${true}")
+                    }
+                )
             }
 
             composable("learningAgreementHomepage?created={created}",
@@ -72,7 +79,12 @@ fun AppNavigation(navController: NavHostController) {
             ) { backStackEntry ->
                 val created = backStackEntry.arguments?.getBoolean("created") ?: false
                 LearningAgreementScreen(
-                    onNavigate = { navController.navigate(it) },
+                    onNavigate = {
+                        navController.navigate(it)
+                    },
+                    onUpload = { uploadedAgreement ->
+                        navController.navigate("learningAgreementEditor/${uploadedAgreement.id}?isUploaded=${true}")
+                    },
                     justCreated = created
                 )
             }
@@ -80,6 +92,7 @@ fun AppNavigation(navController: NavHostController) {
             composable("learningAgreementEditor/new") {
                 LearningAgreementEditorScreen(
                     agreement = null,
+                    isUploaded = false,
                     onNavigate = { navController.navigate(it) },
                     onBack = {
                         navController.navigate("learningAgreementHomepage") {
@@ -90,14 +103,19 @@ fun AppNavigation(navController: NavHostController) {
                 )
             }
 
-            composable("learningAgreementEditor/{id}",
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            composable("learningAgreementEditor/{id}?isUploaded={uploaded}",
+                arguments = listOf(
+                    navArgument("id") { type = NavType.IntType },
+                    navArgument("uploaded") { type = NavType.BoolType }
+                )
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: return@composable
+                val isUploaded = backStackEntry.arguments?.getBoolean("uploaded") == true
                 val agreement = allLearningAgreements.find { it.id == id } ?: return@composable
 
                 LearningAgreementEditorScreen(
                     agreement = agreement,
+                    isUploaded = isUploaded,
                     onNavigate = { navController.navigate(it) },
                     onBack = {
                         navController.navigate("learningAgreementHomepage") {
