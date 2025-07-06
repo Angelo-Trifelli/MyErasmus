@@ -291,7 +291,7 @@ fun AppNavigation(navController: NavHostController) {
                         navController.navigate("chooseAnotherExam/${URLEncoder.encode(homeExam.name, "UTF-8")}/$id")
                     },
                     onBack = {
-                        val target = if (laId == "new") "learningAgreementEditor/new" else "learningAgreementEditor/$laId"
+                        val target = if (laId == "new") "learningAgreementEditor/new" else "learningAgreementEditor/$laId?isUploaded=${false}"
                         navController.navigate(target) {
                             popUpTo("recommendedExam/$homeName/$hostName/$laId") { inclusive = true }
                         }
@@ -399,7 +399,7 @@ fun AppNavigation(navController: NavHostController) {
                         if (learningAgreementId == "new") {
                             navController.navigate("learningAgreementEditor/new")
                         } else {
-                            navController.navigate("learningAgreementEditor/${learningAgreementId.toInt()}")
+                            navController.navigate("learningAgreementEditor/${learningAgreementId.toInt()}?isUploaded=${false}")
                         }
                     }
                 )
