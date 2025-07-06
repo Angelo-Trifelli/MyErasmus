@@ -1,11 +1,14 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
 package com.example.myerasmus.ui.screens.social
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +26,8 @@ import com.example.myerasmus.utils.profileImageRes
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import com.example.myerasmus.utils.DynamicGroupRepository
+import com.example.myerasmus.utils.PublicGroupProfile
 
 data class ChatPreview(
     val name: String,
@@ -32,6 +37,17 @@ data class ChatPreview(
     val isSeen: Boolean,
     val senderName: String? = null
 )
+
+fun joinPublicGroup(group: GroupPreview) {
+    val members = listOf("Lucía Fernández", "Oliver Bennett", "Carolina Monterini")
+    val profile = PublicGroupProfile(
+        name = group.name,
+        description = group.description,
+        imageRes = group.imageRes,
+        members = members
+    )
+    DynamicGroupRepository.addGroup(profile)
+}
 
 @Composable
 fun MessagesScreen(onNavigate: (String) -> Unit) {
@@ -56,10 +72,25 @@ fun MessagesScreen(onNavigate: (String) -> Unit) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                TabButton("Chat", selectedTab == "chat") { selectedTab = "chat" }
-                TabButton("Explore", selectedTab == "explore") { selectedTab = "explore" }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TabButton("Chat", selectedTab == "chat") { selectedTab = "chat" }
+                    TabButton("Explore", selectedTab == "explore") { selectedTab = "explore" }
+                }
+
+                Button(
+                    onClick = { onNavigate("createGroup") },
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF003399),
+                        contentColor = Color.White
+                    ),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text("Create a group", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -77,7 +108,7 @@ fun MessagesScreen(onNavigate: (String) -> Unit) {
             if (selectedTab == "chat") {
                 ChatList(searchText, onNavigate)
             } else {
-                ExploreList(searchText)
+                ExploreList(searchText, onNavigate)
             }
         }
     }
@@ -128,38 +159,40 @@ data class GroupPreview(
     val name: String,
     val description: String,
     val imageRes: Int,
-    val membersCount: Int
+    val membersCount: Int,
+    val isPublic: Boolean
 )
 
 val groups = listOf(
-    GroupPreview(
-        "GymBros in Barcelona💪🏋️‍♂️",
-        "Hey Erasmus friends! 💪 Looking to stay fit during your adventure in Barcelona? Join our gym group and train together with other international students! Whether you're into weightlifting, cardio, or just want some motivation buddies, this group is all about staying healthy, sharing tips, and having fun while working out. Let's get stronger together — and maybe grab a smoothie after!",
-        R.drawable.gym_group,
-        42
-    ),
-    GroupPreview(
-        "Concerts & Events in Barcelona",
-        "Welcome to the Erasmus Concerts & Events Hub in Barcelona! 🎶🎭 Whether you're into indie gigs, techno nights, jazz sessions, food festivals, or cultural exhibitions — this group is for you! Meet other students with similar tastes, share upcoming events, and find buddies to attend with. Let’s explore the city’s amazing nightlife and cultural scene together.",
-        R.drawable.events_group,
-        58
-    ),
-    GroupPreview(
-        "Erasmus Study Buddies📚🧑‍🎓🌍",
-        "Welcome to the Erasmus Study Buddies Barcelona! 📘🤓 Struggling with lectures, assignments, or exam prep? Join our friendly study group made for Erasmus students in Barcelona. Connect with peers studying the same subjects, form study sessions (virtual or face‑to‑face), exchange notes and tips, and boost your learning together.",
-        R.drawable.study_group,
-        27
-    )
+    GroupPreview("GymBros in Barcelona💪🏋️‍♂️", "Hey Erasmus friends! \uD83D\uDCAA Looking to stay fit during your adventure in Barcelona? Join our gym group and train together with other international students! Whether you're into weightlifting, cardio, or just want some motivation buddies, this group is all about staying healthy, sharing tips, and having fun while working out. Let's get stronger together — and maybe grab a smoothie after!", R.drawable.gym_group, 42, false),
+    GroupPreview("Concerts & Events in Barcelona", "Welcome to the Erasmus Concerts & Events Hub in Barcelona! \uD83C\uDFB6\uD83C\uDFAD Whether you're into indie gigs, techno nights, jazz sessions, food festivals, or cultural exhibitions — this group is for you! Meet other students with similar tastes, share upcoming events, and find buddies to attend with. Let’s explore the city’s amazing nightlife and cultural scene together.", R.drawable.events_group, 3, true),
+    GroupPreview("Erasmus Study Buddies📚🧑‍🎓🌍", "Welcome to the Erasmus Study Buddies Barcelona! \uD83D\uDCD8\uD83E\uDD13 Struggling with lectures, assignments, or exam prep? Join our friendly study group made for Erasmus students in Barcelona. Connect with peers studying the same subjects, form study sessions (virtual or face‑to‑face), exchange notes and tips, and boost your learning together.", R.drawable.study_group, 27, false)
+)
+
+val allUsers = listOf(
+    "Lucía Fernández", "Carolina Monterini", "Oliver Bennett",
+    "Lukas Schneider", "Luca Agnellini", "Martina Monelli", "Giulia Casaldi"
 )
 
 @Composable
-fun ExploreList(search: String) {
+fun ExploreList(search: String, onNavigate: (String) -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val requestedGroups = remember { mutableStateListOf<String>() }
 
     val filteredGroups = groups.filter {
         it.name.contains(search, ignoreCase = true)
     }
+
+    val allUsers = listOf(
+        "Lucía Fernández",
+        "Carolina Monterini",
+        "Oliver Bennett",
+        "Lukas Schneider",
+        "Giulia Casaldi",
+        "Martina Monelli",
+        "Luca Agnellini"
+    ).filter { it.contains(search, ignoreCase = true) }
 
     Scaffold(
         snackbarHost = {
@@ -185,35 +218,70 @@ fun ExploreList(search: String) {
                         )
                     }
                 }
-
             }
         },
         containerColor = Color.Transparent
     ) { padding ->
+        // ✅ Scrollable list
         Column(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            filteredGroups.forEach { group ->
-                ExploreItem(group) {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Your request was sent correctly",
-                            duration = SnackbarDuration.Short
-                        )
-                    }
+            if (filteredGroups.isNotEmpty()) {
+                Text(
+                    text = "Groups",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                filteredGroups.forEach { group ->
+                    ExploreItem(
+                        group = group,
+                        isRequested = requestedGroups.contains(group.name),
+                        onRequestJoin = {
+                            requestedGroups.add(group.name)
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = "Your request was sent correctly",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        },
+                        onNavigate = onNavigate
+                    )
+                }
+            }
+
+            if (allUsers.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Users",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                allUsers.forEach { user ->
+                    UserExploreCard(userName = user, onNavigate = onNavigate)
                 }
             }
         }
     }
-
 }
 
 
+
 @Composable
-fun ExploreItem(group: GroupPreview, onRequestJoin: () -> Unit) {
+fun ExploreItem(
+    group: GroupPreview,
+    isRequested: Boolean,
+    onRequestJoin: () -> Unit,
+    onNavigate: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     ElevatedCard(
@@ -234,6 +302,15 @@ fun ExploreItem(group: GroupPreview, onRequestJoin: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(group.name, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(
+                        id = if (group.isPublic) R.drawable.lock_open else R.drawable.lock
+                    ),
+                    contentDescription = if (group.isPublic) "Public" else "Private",
+                    modifier = Modifier.size(20.dp),
+                    tint = Color.Gray
+                )
             }
 
             AnimatedVisibility(visible = expanded) {
@@ -243,17 +320,40 @@ fun ExploreItem(group: GroupPreview, onRequestJoin: () -> Unit) {
                     Text(
                         text = "Members: ${group.membersCount}",
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF003399), // blu Erasmus
+                        color = Color(0xFF003399),
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        Button(onClick = onRequestJoin) {
-                            Text("Request to join")
+                        if (group.isPublic) {
+                            Button(onClick = {
+                                joinPublicGroup(group)
+                                val encoded = URLEncoder.encode(group.name, StandardCharsets.UTF_8.toString())
+                                onNavigate("chatDetail/$encoded/true?createdByUser=false") // ✅ indica che NON è creato da te
+                            }) {
+                                Text("Join")
+                            }
+
+                        } else {
+                            if (isRequested) {
+                                Button(
+                                    onClick = {},
+                                    enabled = false,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Gray,
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text("Request sent")
+                                }
+                            } else {
+                                Button(onClick = onRequestJoin) {
+                                    Text("Request to join")
+                                }
+                            }
                         }
                     }
                 }
@@ -261,7 +361,6 @@ fun ExploreItem(group: GroupPreview, onRequestJoin: () -> Unit) {
         }
     }
 }
-
 
 @Composable
 fun ChatItem(
@@ -311,10 +410,7 @@ fun ChatItem(
                     if (isUserMessage) {
                         Icon(
                             painter = painterResource(
-                                id = if (isSeen)
-                                    R.drawable.ic_check_double
-                                else
-                                    R.drawable.ic_check_single
+                                id = if (isSeen) R.drawable.ic_check_double else R.drawable.ic_check_single
                             ),
                             contentDescription = "Message status",
                             modifier = Modifier
@@ -343,3 +439,39 @@ fun ChatItem(
         }
     }
 }
+
+@Composable
+fun UserExploreCard(userName: String, onNavigate: (String) -> Unit) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = profileImageRes(userName)),
+                contentDescription = "User profile",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Text(
+                text = userName,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.clickable {
+                    val encoded = URLEncoder.encode(userName, StandardCharsets.UTF_8.toString())
+                    onNavigate("publicProfile/$encoded")
+                }
+            )
+        }
+    }
+}
+

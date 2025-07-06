@@ -33,6 +33,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.font.FontWeight
 import com.example.myerasmus.utils.profileImageRes
 import androidx.compose.foundation.layout.navigationBarsPadding
+import java.text.SimpleDateFormat
+import java.util.*
+
+
 
 
 val userNameColors = mapOf(
@@ -63,9 +67,11 @@ data class Message(
 fun ChatDetailScreen(
     contactName: String,
     isGroup: Boolean,
+    createdByUser: Boolean = false, // 👈 nuovo parametro
     onBack: () -> Unit,
     onProfileClick: (String) -> Unit
-) {
+)
+ {
     val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
     var message by remember { mutableStateOf("") }
@@ -142,7 +148,31 @@ fun ChatDetailScreen(
             Message("Scrivimi\uD83D\uDE19", false, "9:05", senderName = "Carolina Monterini", date = "29/02/2025")
         )
 
-            else -> emptyList()
+            else -> {
+                val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+                val isKnownUser = listOf("Carolina Monterini", "Lucía Fernández").contains(contactName)
+                val systemText = if (isGroup) {
+                    if (createdByUser) "You have created the group" else "You joined the group"
+                } else {
+                    null // 👈 Nessun messaggio di sistema per utente generico
+                }
+
+                val initialMessages = mutableListOf<Message>()
+                systemText?.let {
+                    initialMessages.add(
+                        Message(
+                            text = it,
+                            isUser = false,
+                            time = "Now",
+                            date = currentDate,
+                            isSystemMessage = true
+                        )
+                    )
+                }
+                initialMessages
+            }
+
+
         }
     }
 
@@ -150,6 +180,12 @@ fun ChatDetailScreen(
     val groupedMessages = messages.groupBy { it.date }
 
     val listState = rememberLazyListState()
+     LaunchedEffect(messages.size) {
+         if (messages.isNotEmpty()) {
+             val totalItems = groupedMessages.size + groupedMessages.values.sumOf { it.size }
+             listState.scrollToItem(totalItems - 1)
+         }
+     }
     var currentDate by remember { mutableStateOf("") }
     var showFloatingDate by remember { mutableStateOf(false) }
 
@@ -291,7 +327,7 @@ fun ChatDetailScreen(
                                         text = message,
                                         isUser = true,
                                         time = "Now",
-                                        date = "08/06/2025"
+                                        date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
                                     )
                                 )
                                 message = ""
@@ -299,6 +335,7 @@ fun ChatDetailScreen(
                             }
                         }
                     )
+
                 )
 
                 IconButton(onClick = {
@@ -309,14 +346,15 @@ fun ChatDetailScreen(
                                     text = message,
                                     isUser = true,
                                     time = "Now",
-                                    date = "08/06/2025"
+                                    date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
                                 )
                             )
                             message = ""
                             focusManager.clearFocus()
                         }
                     }
-                }) {
+                })
+                {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
                         contentDescription = "Send"
@@ -441,11 +479,14 @@ fun ChatHeader(
                 )
 
                 val imageRes = when {
-                    !isGroup && contactName == "Carolina Monterini" -> R.drawable.carolina_profile
-                    !isGroup && contactName == "Lucía Fernández" -> R.drawable.lucia_profile
-                    isGroup && contactName == "Barcelona Erasmus 25/26!😎✈️🇪🇸" -> R.drawable.barcelona_group
-                    isGroup && contactName == "Italiani a Barcellona 24/25!🇮🇹🍝🇪🇸" -> R.drawable.italians_group
-                    else -> R.drawable.user_profile
+                    isGroup -> {
+                        when (contactName) {
+                            "Barcelona Erasmus 25/26!😎✈️🇪🇸" -> R.drawable.barcelona_group
+                            "Italiani a Barcellona 24/25!🇮🇹🍝🇪🇸" -> R.drawable.italians_group
+                            else -> com.example.myerasmus.utils.DynamicGroupRepository.getGroup(contactName)?.imageRes ?: R.drawable.group_icon
+                        }
+                    }
+                    else -> profileImageRes(contactName)
                 }
 
                 Image(

@@ -33,9 +33,8 @@ data class PublicProfile(
 fun PublicProfileScreen(
     name: String,
     onBack: () -> Unit,
-    onStartChat: (String) -> Unit
-)
- {
+    onStartChat: (String) -> Unit // ✅ nuovo nome corretto
+) {
     val profile = when (name) {
         "Carolina Monterini" -> PublicProfile(
             description = "Hi! I'm Carolina, a 22-year-old language student. I'm cheerful, open-minded, and love meeting new people and discovering different cultures.\n\nI enjoy traveling, taking photos, baking sweets, and having long chats over coffee.\n\nI'm super excited about my Erasmus in Barcelona — it's been a dream of mine for years! I can't wait to explore the city, practice my Spanish, and live this amazing adventure. 🇪🇸✨",
@@ -150,24 +149,24 @@ fun PublicProfileScreen(
                  }
              }
 
-             // ✅ Icona Chat in basso a destra
              FloatingActionButton(
-                 onClick = {
-                     if (name == "Lucía Fernández" || name == "Carolina Monterini") {
-                         onStartChat(name)
-                     }
-                 },
+                 onClick = { onStartChat(name) },
                  containerColor = Color(0xFF003399),
+                 shape = CircleShape,
                  modifier = Modifier
                      .align(Alignment.BottomEnd)
-                     .padding(end = 24.dp, bottom = 24.dp)
+                     .padding(16.dp)
              ) {
-                 Image(
+                 Icon(
                      painter = painterResource(id = R.drawable.ic_chat),
-                     contentDescription = "Start Chat",
-                     modifier = Modifier.size(40.dp)
+                     contentDescription = "Start chat",
+                     tint = Color.White,
+                     modifier = Modifier.size(28.dp)
                  )
              }
+
+
+
          }
      }
 

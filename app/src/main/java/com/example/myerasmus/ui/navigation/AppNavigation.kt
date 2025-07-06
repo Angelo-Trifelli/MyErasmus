@@ -136,8 +136,9 @@ fun AppNavigation(navController: NavHostController) {
                 val rawName = backStackEntry.arguments?.getString("name") ?: ""
                 val decodedName = URLDecoder.decode(rawName, "UTF-8")
 
-                val isGroup = decodedName.contains("Barcelona Erasmus") ||
-                        decodedName.contains("Italiani a Barcellona")
+            val isGroup = DynamicGroupRepository.exists(decodedName) ||
+                    decodedName.contains("Barcelona Erasmus") ||
+                    decodedName.contains("Italiani a Barcellona")
 
                 if (isGroup) {
                     PublicGroupProfileScreen(
@@ -159,31 +160,40 @@ fun AppNavigation(navController: NavHostController) {
                 }
             }
 
-            composable(
-                route = "chatDetail/{name}/{isGroup}",
-                arguments = listOf(
-                    navArgument("name") { type = NavType.StringType },
-                    navArgument("isGroup") { type = NavType.BoolType }
-                )
-            ) { backStackEntry ->
-                val name = URLDecoder.decode(backStackEntry.arguments?.getString("name") ?: "", "UTF-8")
-                val isGroup = backStackEntry.arguments?.getBoolean("isGroup") == true
 
-                ChatDetailScreen(
-                    contactName = name,
-                    isGroup = isGroup,
-                    onBack = {
-                        navController.navigate("messages") {
-                            popUpTo("messages") { inclusive = false }
-                            launchSingleTop = true
-                        }
-                    },
-                    onProfileClick = { profileName ->
-                        val encoded = URLEncoder.encode(profileName, "UTF-8")
-                        navController.navigate("publicProfile/$encoded")
+
+
+        composable(
+            route = "chatDetail/{name}/{isGroup}?createdByUser={createdByUser}",
+            arguments = listOf(
+                navArgument("name") { type = NavType.StringType },
+                navArgument("isGroup") { type = NavType.BoolType },
+                navArgument("createdByUser") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            )
+        ) { backStackEntry ->
+            val name = URLDecoder.decode(backStackEntry.arguments?.getString("name") ?: "", "UTF-8")
+            val isGroup = backStackEntry.arguments?.getBoolean("isGroup") == true
+            val createdByUser = backStackEntry.arguments?.getBoolean("createdByUser") ?: false
+
+            ChatDetailScreen(
+                contactName = name,
+                isGroup = isGroup,
+                createdByUser = createdByUser, // ✅
+                onBack = {
+                    navController.navigate("messages") {
+                        popUpTo("messages") { inclusive = false }
+                        launchSingleTop = true
                     }
-                )
-            }
+                },
+                onProfileClick = { profileName ->
+                    val encoded = URLEncoder.encode(profileName, "UTF-8")
+                    navController.navigate("publicProfile/$encoded")
+                }
+            )
+        }
 
             composable("selectHomeExam/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
@@ -292,9 +302,9 @@ fun AppNavigation(navController: NavHostController) {
                 )
             }
 
-            composable(BottomBarDestination.Profile.route) {
-                ProfileScreen(onNavigate = { navController.navigate(it) })
-            }
+        composable(BottomBarDestination.Profile.route) {
+            ProfileScreen(onNavigate = { navController.navigate(it) })
+        }
 
             composable(
                 route = "filteredExamResults?university={university}&faculty={faculty}&department={department}&course={course}&year={year}&semester={semester}&credits={credits}&language={language}",
@@ -370,6 +380,18 @@ fun AppNavigation(navController: NavHostController) {
                             navController.navigate("learningAgreementEditor/new")
                         } else {
                             navController.navigate("learningAgreementEditor/${learningAgreementId.toInt()}")
+                        }
+                    }
+                )
+            }
+
+            composable("createGroup") {
+                CreateGroupScreen(
+                    onBack = { navController.popBackStack() },
+                    onGroupCreated = { groupName ->
+                        val encoded = URLEncoder.encode(groupName, "UTF-8")
+                        navController.navigate("chatDetail/$encoded/true?createdByUser=true") {
+                            popUpTo(BottomBarDestination.Messages.route)
                         }
                     }
                 )
