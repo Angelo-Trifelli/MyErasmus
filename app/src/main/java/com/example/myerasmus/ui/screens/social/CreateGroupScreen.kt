@@ -19,12 +19,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.foundation.layout.navigationBarsPadding
 import com.example.myerasmus.R
 import com.example.myerasmus.utils.DynamicGroupRepository
 import com.example.myerasmus.utils.profileImageRes
 import com.example.myerasmus.utils.PublicGroupProfile
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +64,7 @@ fun CreateGroupScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .navigationBarsPadding()
                     .padding(16.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
@@ -100,7 +102,6 @@ fun CreateGroupScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // IMMAGINE CENTRATA
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -173,8 +174,7 @@ fun CreateGroupScreen(
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(horizontal = 12.dp, vertical = 10.dp)
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
                         ) {
                             Checkbox(
                                 checked = isSelected,
@@ -184,7 +184,6 @@ fun CreateGroupScreen(
                                 }
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-
                             Image(
                                 painter = painterResource(id = imageId),
                                 contentDescription = "$name image",
@@ -193,19 +192,16 @@ fun CreateGroupScreen(
                                     .clip(CircleShape),
                                 contentScale = ContentScale.Crop
                             )
-
                             Spacer(modifier = Modifier.width(12.dp))
-
                             Text(name, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp)) // per non coprire contenuto col bottone
+            Spacer(modifier = Modifier.height(80.dp)) // spazio extra per evitare overlap
         }
 
-        // BOTTOM SHEET: selezione immagine
         if (showImageOptions) {
             ModalBottomSheet(onDismissRequest = { showImageOptions = false }) {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -214,7 +210,7 @@ fun CreateGroupScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                // TODO: apri galleria
+                                // TODO: open gallery
                                 showImageOptions = false
                             }
                             .padding(12.dp),
@@ -224,7 +220,6 @@ fun CreateGroupScreen(
             }
         }
 
-        // DIALOGO CONFERMA USCITA
         if (showBackConfirmation) {
             AlertDialog(
                 onDismissRequest = { showBackConfirmation = false },

@@ -6,13 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -81,11 +77,9 @@ fun ExamScreen(
                     if (showAddToLaButton) {
                         IconButton(
                             onClick = {
-                                //Shouldn't happen
                                 if (homeUniversityExam == null) {
-                                    throw Exception("Missing home university exam for associaton")
+                                    throw Exception("Missing home university exam for association")
                                 }
-
                                 addExamToLa(learningAgreementId, examInfo, homeUniversityExam)
                                 onExamAdded()
                             },
@@ -102,121 +96,124 @@ fun ExamScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(scrollState)
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // --- Professor Info ---
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // --- Professor Info ---
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(150.dp)
-                            .clip(CircleShape)
-                            .border(width = 5.dp, color = Color(0xFFFFCC00), shape = CircleShape)
-                    ) {
-                        Image(
-                            painter = painterResource(id = imageId),
-                            contentDescription = "Professor Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize().clip(CircleShape)
-                        )
-                    }
-
-                    Column {
-                        Text(examInfo.professorFullName, style = MaterialTheme.typography.headlineSmall)
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Text(examInfo.professorEmail, style = MaterialTheme.typography.bodyLarge)
-                        Spacer(modifier = Modifier.height(5.dp))
-                        val credits = when (examInfo) {
-                            is HomeUniversityExam -> examInfo.cfu
-                            is HostUniversityExam -> examInfo.ects
-                            else -> 0
-                        }
-                        Text("$credits Credits", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // --- Description ---
-                Text(
-                    text = "Description",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF003399)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Column(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, Color.Gray)
-                        .padding(8.dp)
+                        .size(150.dp)
+                        .clip(CircleShape)
+                        .border(width = 5.dp, color = Color(0xFFFFCC00), shape = CircleShape)
                 ) {
-                    Text(
-                        text = stringResource(id = descriptionId),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.DarkGray
+                    Image(
+                        painter = painterResource(id = imageId),
+                        contentDescription = "Professor Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().clip(CircleShape)
                     )
                 }
 
+                Column {
+                    Text(
+                        text = examInfo.professorFullName,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = examInfo.professorEmail,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(12.dp)) // spazio aggiunto tra blocchi
+
+                    Text(
+                        text = "Code: ${examInfo.courseCode}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                    val credits = when (examInfo) {
+                        is HomeUniversityExam -> examInfo.cfu
+                        is HostUniversityExam -> examInfo.ects
+                        else -> 0
+                    }
+                    Text(
+                        text = "$credits Credits",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // --- Description ---
+            Text(
+                text = "Description",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFF003399)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, Color.Gray)
+                    .padding(8.dp)
+            ) {
                 Text(
-                    text = "Student Reviews",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF003399)
+                    text = stringResource(id = descriptionId),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.DarkGray
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // --- Reviews ---
+            Text(
+                text = "Student Reviews",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFF003399)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            for ((name, rating, textRes) in reviewers) {
+                ReviewCard(
+                    studentName = name,
+                    rating = rating,
+                    reviewText = stringResource(id = textRes),
+                    studentImage = CommonHelper.reviewerImageRes(name)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // --- Reviews scrollabili ---
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 16.dp),
-                contentPadding = PaddingValues(bottom = 16.dp)
-            ) {
-                items(reviewers) { (name, rating, textRes) ->
-                    ReviewCard(
-                        studentName = name,
-                        rating = rating,
-                        reviewText = stringResource(id = textRes),
-                        studentImage = CommonHelper.reviewerImageRes(name)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
-
 
 fun addExamToLa(learningAgreementId: String, hostUniversityExam: HostUniversityExam, homeUniversityExam: HomeUniversityExam) {
     if (learningAgreementId == "new") {
         val targetAgreement = newUnsavedAgreement
         newUnsavedAgreement = targetAgreement?.copy(
-            associations = targetAgreement.associations + ( hostUniversityExam to homeUniversityExam)
+            associations = targetAgreement.associations + (hostUniversityExam to homeUniversityExam)
         )
-
         return
     }
 
     val id = learningAgreementId.toInt()
     val learningAgreement = allLearningAgreements.find { it.id == id }
 
-    //Shouldn't happen
     if (learningAgreement == null) {
-        throw Exception("Can't find a learning a agreement")
+        throw Exception("Can't find a learning agreement")
     }
 
     val updatedAgreement = learningAgreement.copy(

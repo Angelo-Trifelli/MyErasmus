@@ -30,6 +30,8 @@ import com.example.myerasmus.utils.*
 import java.net.URLEncoder
 import java.net.URLDecoder
 import com.example.myerasmus.ui.screens.exam.FilteredExamResultsScreen
+import com.example.myerasmus.ui.screens.help.HelpDetailScreen
+import com.example.myerasmus.ui.screens.help.HelpScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -406,9 +408,11 @@ fun AppNavigation(navController: NavHostController) {
                         }
                     },
                     onRegisterClick = { navController.navigate("register") },
-                    onForgotPasswordClick = { navController.navigate("forgotPassword")}
+                    onForgotPasswordClick = { navController.navigate("forgotPassword") },
+                    onHelpClick = { navController.navigate("help") }
                 )
             }
+
 
             composable("register") {
                 RegisterScreen(
@@ -429,6 +433,29 @@ fun AppNavigation(navController: NavHostController) {
                     onPasswordResetRequest = { navController.navigate("login") }
                 )
             }
+
+            composable("help") {
+                HelpScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigateToDetail = { section ->
+                        navController.navigate("helpDetail/$section")
+                    }
+                )
+            }
+
+            composable(
+                "helpDetail/{sectionId}",
+                arguments = listOf(navArgument("sectionId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val sectionId = backStackEntry.arguments?.getString("sectionId") ?: ""
+                HelpDetailScreen(
+                    sectionId = sectionId,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+
+
         }
     }
 

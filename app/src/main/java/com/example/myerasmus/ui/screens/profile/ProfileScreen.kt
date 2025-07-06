@@ -84,6 +84,18 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                             }
                         )
                         DropdownMenuItem(
+                            text = { Text("Help") },
+                            onClick = {
+                                showMenu = false
+                                if (isEditingDescription) {
+                                    pendingAction = { onNavigate("help") }
+                                    showCancelDialog = true
+                                } else {
+                                    onNavigate("help")
+                                }
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text("Logout", color = Color.Red) },
                             onClick = {
                                 showMenu = false
@@ -96,6 +108,7 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                             }
                         )
                     }
+
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF003399))
             )
