@@ -68,7 +68,7 @@ fun FilteredExamResultsScreen(
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(exam.name, style = MaterialTheme.typography.titleMedium)
+                        Text("${exam.name} | ${exam.courseCode}", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(4.dp))
                         Text("${exam.ects} ECTS", style = MaterialTheme.typography.bodySmall)
                     }

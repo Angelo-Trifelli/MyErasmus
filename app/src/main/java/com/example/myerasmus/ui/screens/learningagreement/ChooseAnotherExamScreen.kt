@@ -87,7 +87,7 @@ fun ChooseAnotherExamScreen(
                             }
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = exam.name, style = MaterialTheme.typography.titleMedium)
+                            Text(text = "${exam.name} | ${exam.courseCode}", style = MaterialTheme.typography.titleMedium)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("${exam.ects} ECTS", style = MaterialTheme.typography.bodySmall)
                         }
