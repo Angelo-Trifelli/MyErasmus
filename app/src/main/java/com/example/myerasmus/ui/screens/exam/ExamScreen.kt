@@ -1,6 +1,7 @@
 package com.example.myerasmus.ui.screens.exam
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,14 +11,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,11 +35,12 @@ import com.example.myerasmus.utils.HostUniversityExam
 import com.example.myerasmus.utils.allLearningAgreements
 import com.example.myerasmus.utils.examDescriptionRes
 import com.example.myerasmus.utils.newUnsavedAgreement
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+
+
 
 
 @Composable
@@ -57,6 +61,10 @@ fun ExamScreen(
     val imageId = remember { CommonHelper.profileImageRes(examInfo.professorFullName) }
     val descriptionId = remember { examDescriptionRes(examInfo.name) }
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val detailsOffset = remember { mutableStateOf(0) }
+    val reviewsOffset = remember { mutableStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -77,161 +85,204 @@ fun ExamScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go Back", tint = Color.White)
                     }
                 },
-                actions = {
-                    if (showAddToLaButton) {
-                        IconButton(
-                            onClick = {
-                                if (homeUniversityExam == null) throw Exception("Missing home university exam")
-                                addExamToLa(learningAgreementId, examInfo, homeUniversityExam)
-                                onExamAdded()
-                            },
-                            colors = IconButtonDefaults.iconButtonColors(containerColor = Color(0xFF003399))
-                        ) {
-                            Icon(Icons.Default.Add, tint = Color.White, contentDescription = "Add")
-                        }
-                    }
-                }
+                actions = {}
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp)
-                .fillMaxSize()
-        ) {
-            Spacer(Modifier.height(24.dp))
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
 
-            // --- Professor Info ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = imageId),
-                    contentDescription = "Professor",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(CircleShape)
-                        .border(5.dp, Color(0xFFFFCC00), CircleShape)
-                )
-                Column {
-                    Text(text = examInfo.professorFullName, style = MaterialTheme.typography.headlineSmall)
-                    Spacer(Modifier.height(4.dp))
-                    Text(text = examInfo.professorEmail, style = MaterialTheme.typography.bodyLarge)
-                    Spacer(Modifier.height(12.dp))
-                    Text("Code: ${examInfo.courseCode}", fontWeight = FontWeight.Medium)
-                    val credits = when (examInfo) {
-                        is HomeUniversityExam -> examInfo.cfu
-                        is HostUniversityExam -> examInfo.ects
-                        else -> 0
-                    }
-                    Text("$credits Credits", style = MaterialTheme.typography.bodyLarge)
-                }
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            // --- Description ---
-            Text("Description", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, color = Color(0xFF003399)))
-            Spacer(Modifier.height(8.dp))
             Column(
-                modifier = Modifier.fillMaxWidth().border(1.dp, Color.Gray).padding(8.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(top = 56.dp, bottom = 32.dp, start = 16.dp, end = 16.dp)
             ) {
-                Text(text = stringResource(id = descriptionId), color = Color.DarkGray)
-            }
+                Spacer(Modifier.height(24.dp))
 
-            Spacer(Modifier.height(32.dp))
+                Column(modifier = Modifier.onGloballyPositioned { coordinates ->
+                    detailsOffset.value = coordinates.positionInParent().y.toInt()
+                }) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = imageId),
+                            contentDescription = "Professor",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(150.dp)
+                                .clip(CircleShape)
+                                .border(5.dp, Color(0xFFFFCC00), CircleShape)
+                        )
+                        Column {
+                            Text(text = examInfo.professorFullName, style = MaterialTheme.typography.headlineSmall)
+                            Spacer(Modifier.height(4.dp))
+                            Text(text = examInfo.professorEmail, style = MaterialTheme.typography.bodyLarge)
+                            Spacer(Modifier.height(12.dp))
+                            Text("Code: ${examInfo.courseCode}", fontWeight = FontWeight.Medium)
+                            val credits = when (examInfo) {
+                                is HomeUniversityExam -> examInfo.cfu
+                                is HostUniversityExam -> examInfo.ects
+                                else -> 0
+                            }
+                            Text("$credits Credits", style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
 
-            // --- Reviews Header ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Student Reviews", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, color = Color(0xFF003399)))
-                if (!hasUserReview) {
-                    IconButton(onClick = { onAddReview(null, null) }) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Review", tint = Color(0xFF003399))
+                    Spacer(Modifier.height(24.dp))
+
+                    Text("Description", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, color = Color(0xFF003399)))
+                    Spacer(Modifier.height(8.dp))
+                    Column(
+                        modifier = Modifier.fillMaxWidth().border(1.dp, Color.Gray).padding(8.dp)
+                    ) {
+                        Text(text = stringResource(id = descriptionId), color = Color.DarkGray)
                     }
                 }
-            }
 
-            Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(32.dp))
 
-            // --- Review Cards ---
-            reviews.forEachIndexed { index, (name, rating, content) ->
-                val text = when (content) {
-                    is Int -> stringResource(id = content)
-                    is String -> content
-                    else -> ""
-                }
-
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    ReviewCard(
-                        studentName = name,
-                        rating = rating,
-                        reviewText = text,
-                        studentImage = CommonHelper.reviewerImageRes(name),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    if (name == "Anna Ruzzoli") {
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(8.dp)
-                        ) {
-                            IconButton(onClick = {
-                                onAddReview(rating, text)
-                            }) {
-                                Icon(Icons.Default.Edit, contentDescription = "Edit Review", tint = Color(0xFF003399))
-                            }
-                            IconButton(onClick = {
-                                showDeleteDialog = true
-                            }) {
-                                Icon(Icons.Default.Delete, contentDescription = "Delete Review", tint = Color.Red)
+                Column(modifier = Modifier.onGloballyPositioned { coordinates ->
+                    reviewsOffset.value = coordinates.positionInParent().y.toInt()
+                }) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Student Reviews", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, color = Color(0xFF003399)))
+                        if (!hasUserReview) {
+                            IconButton(onClick = { onAddReview(null, null) }) {
+                                Icon(Icons.Default.Add, contentDescription = "Add Review", tint = Color(0xFF003399))
                             }
                         }
                     }
-                }
 
-                if (index != reviews.lastIndex) Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(16.dp))
+
+                    reviews.forEachIndexed { index, (name, rating, content) ->
+                        val text = when (content) {
+                            is Int -> stringResource(id = content)
+                            is String -> content
+                            else -> ""
+                        }
+
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            ReviewCard(
+                                studentName = name,
+                                rating = rating,
+                                reviewText = text,
+                                studentImage = CommonHelper.reviewerImageRes(name),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            if (name == "Anna Ruzzoli") {
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .padding(end = 12.dp)
+                                ) {
+                                    IconButton(onClick = {
+                                        onAddReview(rating, text)
+                                    }) {
+                                        Icon(Icons.Default.Edit, contentDescription = "Edit Review", tint = Color(0xFF003399))
+                                    }
+                                    IconButton(onClick = {
+                                        showDeleteDialog = true
+                                    }) {
+                                        Icon(Icons.Default.Delete, contentDescription = "Delete Review", tint = Color.Red)
+                                    }
+                                }
+                            }
+                        }
+
+                        if (index != reviews.lastIndex) Spacer(Modifier.height(12.dp))
+                    }
+                }
             }
 
-            Spacer(Modifier.height(32.dp))
-        }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(8.dp)
+                    .align(Alignment.TopCenter),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val blue = Color(0xFF003399)
 
-        // --- Dialog: Conferma Eliminazione ---
-        if (showDeleteDialog) {
-            AlertDialog(
-                onDismissRequest = { showDeleteDialog = false },
-                confirmButton = {
-                    TextButton(onClick = {
-                        CommonHelper.deleteReview(examInfo.name)
-                        reviews = CommonHelper.getReviewsForExam(examInfo.name)
-                        hasUserReview = false
-                        showDeleteDialog = false
-                    }) {
-                        Text("Delete", color = Color.Red)
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                scrollState.animateScrollTo(detailsOffset.value)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = blue)
+                    ) {
+                        Text("Details", color = Color.White)
                     }
 
-                },
-                dismissButton = {
-                    TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Cancel")
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                scrollState.animateScrollTo(reviewsOffset.value)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = blue)
+                    ) {
+                        Text("Reviews", color = Color.White)
                     }
-                },
-                title = { Text("Delete Review?") },
-                text = { Text("Are you sure you want to delete your review?") }
-            )
+                }
+
+                if (showAddToLaButton) {
+                    val green = Color(0xFF4CAF50) // Verde brillante
+                    Button(
+                        onClick = {
+                            if (homeUniversityExam == null) throw Exception("Missing home university exam")
+                            addExamToLa(learningAgreementId, examInfo, homeUniversityExam)
+                            onExamAdded()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = green)
+                    ) {
+                        Text("Add to LA", color = Color.White)
+                    }
+                }
+
+            }
+
+
+
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = false },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            CommonHelper.deleteReview(examInfo.name)
+                            reviews = CommonHelper.getReviewsForExam(examInfo.name)
+                            hasUserReview = false
+                            showDeleteDialog = false
+                        }) {
+                            Text("Delete", color = Color.Red)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDeleteDialog = false }) {
+                            Text("Cancel")
+                        }
+                    },
+                    title = { Text("Delete Review?") },
+                    text = { Text("Are you sure you want to delete your review?") }
+                )
+            }
         }
     }
 }
-
 
 fun addExamToLa(learningAgreementId: String, hostUniversityExam: HostUniversityExam, homeUniversityExam: HomeUniversityExam) {
     if (learningAgreementId == "new") {
