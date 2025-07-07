@@ -18,9 +18,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.myerasmus.ui.classes.CommonHelper
 import com.example.myerasmus.ui.components.enums.BottomBarDestination
+import com.example.myerasmus.ui.screens.authentication.CompleteRegistrationScreen
 import com.example.myerasmus.ui.screens.authentication.ForgotPasswordScreen
+import com.example.myerasmus.ui.screens.authentication.LoadingUserDataScreen
 import com.example.myerasmus.ui.screens.authentication.LoginScreen
 import com.example.myerasmus.ui.screens.authentication.RegisterScreen
+import com.example.myerasmus.ui.screens.authentication.UserDataLoadedScreen
 import com.example.myerasmus.ui.screens.exam.AddReviewScreen
 import com.example.myerasmus.ui.screens.exam.ExamScreen
 import com.example.myerasmus.ui.screens.exam.FindExamPage
@@ -52,7 +55,7 @@ fun AppNavigation(navController: NavHostController) {
             }
         }
     ) { @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-        NavHost(navController = navController, startDestination = "viewHostExams") {
+        NavHost(navController = navController, startDestination = "login") {
 
             composable(BottomBarDestination.Homepage.route) {
                 HomepageScreen(onNavigate = { navController.navigate(it) })
@@ -481,12 +484,42 @@ fun AppNavigation(navController: NavHostController) {
 
             composable("register") {
                 RegisterScreen(
-                    onRegisterSuccess = {
-                        navController.navigate("login") {
-                            popUpTo("register") { inclusive = true }
-                        }
+                    onEmailInserted = {
+                        navController.navigate("loadingUserData")
                     },
                     onLoginClick = { navController.navigate("login") }
+                )
+            }
+
+            composable("loadingUserData") {
+                LoadingUserDataScreen(
+                    onFinish = {
+                        navController.navigate("userDataLoaded")
+                    }
+                )
+            }
+
+            composable("userDataLoaded") {
+                UserDataLoadedScreen(
+                    onBack = {
+                        navController.navigate("register")
+                    },
+                    onConfirm = {
+                        navController.navigate("completeRegistration")
+                    }
+                )
+            }
+
+            composable("completeRegistration") {
+                CompleteRegistrationScreen(
+                    snackbarHostState = snackbarHostState,
+                    coroutineScope = coroutineScope,
+                    onGoBack = {
+                        navController.navigate("userDataLoaded")
+                    },
+                    onRegistrationComplete = {
+                        navController.navigate("login")
+                    }
                 )
             }
 
