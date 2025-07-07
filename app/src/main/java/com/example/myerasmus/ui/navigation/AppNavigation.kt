@@ -52,7 +52,7 @@ fun AppNavigation(navController: NavHostController) {
             }
         }
     ) { @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-        NavHost(navController = navController, startDestination = BottomBarDestination.FindExamPage.route) {
+        NavHost(navController = navController, startDestination = "viewHostExams") {
 
             composable(BottomBarDestination.Homepage.route) {
                 HomepageScreen(onNavigate = { navController.navigate(it) })
@@ -70,6 +70,11 @@ fun AppNavigation(navController: NavHostController) {
                     onUpload = { uploadedAgreement ->
                         navController.navigate("learningAgreementEditor/${uploadedAgreement.id}?isUploaded=${true}")
                     }
+                )
+            }
+            composable("viewHostExams") {
+                ViewHostExamsScreen(
+                    onBack = { navController.popBackStack() }
                 )
             }
 
