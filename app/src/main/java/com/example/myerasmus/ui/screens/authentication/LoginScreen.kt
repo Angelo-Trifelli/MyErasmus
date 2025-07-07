@@ -51,14 +51,14 @@ fun LoginScreen(
             ) {
                 focusManager.clearFocus()
             }
-            .padding(32.dp)
+            .padding(vertical = 32.dp)
     ) {
         // Icona "?" in alto a sinistra
         IconButton(
             onClick = { onHelpClick() },
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(top = 8.dp)
+                .padding(top = 16.dp, start = 8.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Help,
@@ -71,7 +71,9 @@ fun LoginScreen(
         // Contenuto centrale
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier
+                .padding(horizontal = 32.dp)
+                .align(Alignment.Center)
         ) {
             Text(
                 text = stringResource(R.string.app_name),
