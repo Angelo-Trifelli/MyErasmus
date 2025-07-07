@@ -52,7 +52,7 @@ fun AppNavigation(navController: NavHostController) {
             }
         }
     ) { @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-        NavHost(navController = navController, startDestination = "login") {
+        NavHost(navController = navController, startDestination = BottomBarDestination.FindExamPage.route) {
 
             composable(BottomBarDestination.Homepage.route) {
                 HomepageScreen(onNavigate = { navController.navigate(it) })
@@ -167,10 +167,12 @@ fun AppNavigation(navController: NavHostController) {
                         name = decodedName,
                         onBack = { navController.popBackStack() },
                         onNavigateToProfile = { profileName ->
-                            navController.navigate("publicProfile/$profileName")
+                            val encoded = URLEncoder.encode(profileName, "UTF-8")
+                            navController.navigate("publicProfile/$encoded")
                         }
                     )
-                } else {
+                }
+                else {
                     PublicProfileScreen(
                         name = decodedName,
                         onBack = { navController.popBackStack() },
@@ -407,9 +409,11 @@ fun AppNavigation(navController: NavHostController) {
                         val encodedRating = prefillRating?.toString() ?: "0"
                         val encodedText = URLEncoder.encode(prefillText ?: "", "UTF-8")
                         navController.navigate("addReview/$encodedExam/$encodedRating/$encodedText")
+                    },
+                    onNavigateToProfile = { profileName ->
+                        val encoded = URLEncoder.encode(profileName, "UTF-8")
+                        navController.navigate("publicProfile/$encoded")
                     }
-
-
                 )
             }
 

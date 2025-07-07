@@ -67,19 +67,51 @@ object CommonHelper {
 
     // Recensioni statiche (iniziali)
     private val predefinedReviews = mapOf(
+        "International Marketing" to listOf(
+            Triple("Claire Dupont", 5, R.string.marketing_claire_review),
+            Triple("Alexander Ivanov", 4, R.string.marketing_alexander_review),
+            Triple("Theresa Schmidt", 3, R.string.marketing_theresa_review)
+        ),
         "Macroeconomics I" to listOf(
             Triple("Sophie Dubois", 5, R.string.macroeconomics_sophie_review),
-            Triple("Marek Nowak", 3, R.string.macroeconomics_marek_review),
-            Triple("Luigi Conti", 4, R.string.macroeconomics_luigi_review)
+            Triple("Marek Nowak", 4, R.string.macroeconomics_marek_review),
+            Triple("Luigi Conti", 3, R.string.macroeconomics_luigi_review)
         ),
         "Regional and Local Finance" to listOf(
-            Triple("Elena Petrova", 4, R.string.finance_elena_review),
-            Triple("Jonas Berg", 2, R.string.finance_jonas_review),
-            Triple("Inés Muñoz", 5, R.string.finance_ines_review)
+            Triple("Elena Petrova", 5, R.string.finance_elena_review),
+            Triple("Jonas Berg", 3, R.string.finance_jonas_review),
+            Triple("Inés Muñoz", 5, R.string.marketing_theresa_review)
         ),
-        "Business Economics" to listOf(
-            Triple("Carolina Monterini", 5, R.string.business_economics_monterini_review)
+        "Development Economics" to listOf(
+            Triple("Daniel Johansson", 4, R.string.development_daniel_review),
+            Triple("Yasmin Ben Saïd", 5, R.string.development_yasmin_review)
+        ),
+        "Behavioral Finance" to listOf(
+            Triple("Kim Lee", 5, R.string.behavioral_kim_review),
+            Triple("Eduardo Silva", 3, R.string.behavioral_eduardo_review),
+            Triple("Sofia Rossi", 4, R.string.behavioral_sofia_review)
+        ),
+        "Data Analysis" to listOf(
+            Triple("Sven Müller", 4, R.string.data_sven_review),
+            Triple("Amélie Laurent", 5, R.string.data_amelie_review)
+        ),
+        "Human Resource Management" to listOf(
+            Triple("Nina Bălan", 5, R.string.hrm_nina_review),
+            Triple("Omar Haddad", 3, R.string.hrm_omar_review)
+        ),
+        "International Relations" to listOf(
+            Triple("Julia Nowicka", 5, R.string.ir_julia_review),
+            Triple("Mohammed Al-Farsi", 4, R.string.ir_mohammed_review)
+        ),
+        "Strategic Management" to listOf(
+            Triple("Felipe García", 4, R.string.strategy_felipe_review),
+            Triple("Karin Schneider", 5, R.string.strategy_karin_review)
+        ),
+        "Entrepreneurship" to listOf(
+            Triple("Linda Svensson", 5, R.string.entrepreneurship_linda_review),
+            Triple("Ricardo Costa", 4, R.string.entrepreneurship_ricardo_review)
         )
+
     )
 
     // Recensioni dinamiche (aggiunte/modificate da utenti)

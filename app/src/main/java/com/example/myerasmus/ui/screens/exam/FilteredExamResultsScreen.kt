@@ -40,7 +40,12 @@ fun FilteredExamResultsScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text("Find Exam", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Find Exam",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {

@@ -28,6 +28,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import com.example.myerasmus.utils.DynamicGroupRepository
 import com.example.myerasmus.utils.PublicGroupProfile
+import com.example.myerasmus.ui.classes.CommonHelper
 
 data class ChatPreview(
     val name: String,
@@ -191,7 +192,31 @@ fun ExploreList(search: String, onNavigate: (String) -> Unit) {
         "Lukas Schneider",
         "Giulia Casaldi",
         "Martina Monelli",
-        "Luca Agnellini"
+        "Luca Agnellini",
+        "Sophie Dubois",
+        "Marek Nowak",
+        "Luigi Conti",
+        "Elena Petrova",
+        "Jonas Berg",
+        "Inés Muñoz",
+        "Claire Dupont",
+        "Alexander Ivanov",
+        "Theresa Schmidt",
+        "Daniel Johansson",
+        "Yasmin Ben Saïd",
+        "Kim Lee",
+        "Eduardo Silva",
+        "Sofia Rossi",
+        "Sven Müller",
+        "Amélie Laurent",
+        "Nina Bălan",
+        "Omar Haddad",
+        "Julia Nowicka",
+        "Mohammed Al-Farsi",
+        "Felipe García",
+        "Karin Schneider",
+        "Linda Svensson",
+        "Ricardo Costa"
     ).filter { it.contains(search, ignoreCase = true) }
 
     Scaffold(
@@ -452,8 +477,17 @@ fun UserExploreCard(userName: String, onNavigate: (String) -> Unit) {
             modifier = Modifier
                 .padding(12.dp)
         ) {
+            val imageRes = if (userName in listOf(
+                    "Lucía Fernández", "Carolina Monterini", "Oliver Bennett",
+                    "Lukas Schneider", "Giulia Casaldi", "Martina Monelli", "Luca Agnellini"
+                )) {
+                profileImageRes(userName)
+            } else {
+                CommonHelper.reviewerImageRes(userName)
+            }
+
             Image(
-                painter = painterResource(id = profileImageRes(userName)),
+                painter = painterResource(id = imageRes),
                 contentDescription = "User profile",
                 modifier = Modifier
                     .size(40.dp)
@@ -474,4 +508,5 @@ fun UserExploreCard(userName: String, onNavigate: (String) -> Unit) {
         }
     }
 }
+
 

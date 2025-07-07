@@ -35,7 +35,7 @@ import com.example.myerasmus.utils.profileImageRes
 import androidx.compose.foundation.layout.navigationBarsPadding
 import java.text.SimpleDateFormat
 import java.util.*
-
+import com.example.myerasmus.ui.classes.CommonHelper
 
 
 
@@ -486,7 +486,19 @@ fun ChatHeader(
                             else -> com.example.myerasmus.utils.DynamicGroupRepository.getGroup(contactName)?.imageRes ?: R.drawable.group_icon
                         }
                     }
-                    else -> profileImageRes(contactName)
+                    else -> if (contactName in listOf(
+                            "Carolina Monterini",
+                            "Lucía Fernández",
+                            "Luca Agnellini",
+                            "Martina Monelli",
+                            "Giulia Casaldi",
+                            "Oliver Bennett",
+                            "Lukas Schneider"
+                        )) {
+                        profileImageRes(contactName)
+                    } else {
+                        CommonHelper.reviewerImageRes(contactName)
+                    }
                 }
 
                 Image(

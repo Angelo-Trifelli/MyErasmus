@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,7 @@ import com.example.myerasmus.utils.DynamicGroupRepository
 import com.example.myerasmus.utils.PublicGroupProfile
 import com.example.myerasmus.utils.profileImageRes
 import java.net.URLEncoder
+import com.example.myerasmus.ui.classes.CommonHelper
 
 fun isPrivateGroup(name: String): Boolean {
     return name == "Barcelona Erasmus 25/26!😎✈️🇪🇸" || name == "Italiani a Barcellona 24/25!🇮🇹🍝🇪🇸"
@@ -199,14 +201,18 @@ fun MemberCard(name: String, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(12.dp)
         ) {
-            val imageRes = profileImageRes(name)
+            val imageRes = if (name in listOf(
+                    "Lucía Fernández", "Carolina Monterini", "Luca Agnellini",
+                    "Martina Monelli", "Giulia Casaldi", "Oliver Bennett"
+                )) profileImageRes(name) else CommonHelper.reviewerImageRes(name)
 
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = "$name profile",
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -219,3 +225,4 @@ fun MemberCard(name: String, onClick: () -> Unit) {
         }
     }
 }
+

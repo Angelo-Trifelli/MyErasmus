@@ -3,6 +3,7 @@ package com.example.myerasmus.ui.screens.exam
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -51,7 +52,8 @@ fun ExamScreen(
     learningAgreementId: String,
     onBack: () -> Unit,
     onExamAdded: () -> Unit,
-    onAddReview: (prefillRating: Int?, prefillText: String?) -> Unit
+    onAddReview: (prefillRating: Int?, prefillText: String?) -> Unit,
+    onNavigateToProfile: (String) -> Unit
 ) {
     val examInfo = remember { CommonHelper.findExamByName(examName) }
     var reviews by remember { mutableStateOf(CommonHelper.getReviewsForExam(examInfo.name)) }
@@ -155,7 +157,7 @@ fun ExamScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Student Reviews", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, color = Color(0xFF003399)))
-                        if (!hasUserReview) {
+                        if (!showAddToLaButton && !hasUserReview) {
                             IconButton(onClick = { onAddReview(null, null) }) {
                                 Icon(Icons.Default.Add, contentDescription = "Add Review", tint = Color(0xFF003399))
                             }
@@ -177,7 +179,11 @@ fun ExamScreen(
                                 rating = rating,
                                 reviewText = text,
                                 studentImage = CommonHelper.reviewerImageRes(name),
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable(enabled = name != "Anna Ruzzoli") {
+                                        onNavigateToProfile(name)
+                                    }
                             )
 
                             if (name == "Anna Ruzzoli") {

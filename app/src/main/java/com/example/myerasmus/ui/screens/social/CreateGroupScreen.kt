@@ -26,6 +26,7 @@ import com.example.myerasmus.R
 import com.example.myerasmus.utils.DynamicGroupRepository
 import com.example.myerasmus.utils.profileImageRes
 import com.example.myerasmus.utils.PublicGroupProfile
+import com.example.myerasmus.ui.classes.CommonHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,8 +43,16 @@ fun CreateGroupScreen(
     var showBackConfirmation by remember { mutableStateOf(false) }
 
     val allUsers = listOf(
-        "Lucía Fernández", "Carolina Monterini", "Luca Agnellini",
-        "Martina Monelli", "Giulia Casaldi", "Oliver Bennett"
+        // Utenti social
+        "Lucía Fernández", "Carolina Monterini", "Luca Agnellini", "Martina Monelli",
+        "Giulia Casaldi", "Oliver Bennett",
+
+        // Recensori extra
+        "Sophie Dubois", "Marek Nowak", "Luigi Conti", "Elena Petrova", "Jonas Berg",
+        "Inés Muñoz", "Claire Dupont", "Alexander Ivanov", "Theresa Schmidt", "Daniel Johansson",
+        "Yasmin Ben Saïd", "Kim Lee", "Eduardo Silva", "Sofia Rossi", "Sven Müller",
+        "Amélie Laurent", "Nina Bălan", "Omar Haddad", "Julia Nowicka", "Mohammed Al-Farsi",
+        "Felipe García", "Karin Schneider", "Linda Svensson", "Ricardo Costa"
     )
     val selectedMembers = remember { mutableStateListOf<String>() }
 
@@ -156,7 +165,11 @@ fun CreateGroupScreen(
 
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 allUsers.forEach { name ->
-                    val imageId = profileImageRes(name)
+                    val imageId = if (name in listOf(
+                            "Lucía Fernández", "Carolina Monterini", "Luca Agnellini", "Martina Monelli",
+                            "Giulia Casaldi", "Oliver Bennett"
+                        )) profileImageRes(name) else CommonHelper.reviewerImageRes(name)
+
                     val isSelected = selectedMembers.contains(name)
 
                     Card(
