@@ -59,6 +59,7 @@ fun ExamScreen(
     var reviews by remember { mutableStateOf(CommonHelper.getReviewsForExam(examInfo.name)) }
     var hasUserReview by remember { mutableStateOf(CommonHelper.hasUserReview(examInfo.name)) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showAddToLaConfirmDialog by remember { mutableStateOf(false) }
 
     val imageId = remember { CommonHelper.profileImageRes(examInfo.professorFullName) }
     val descriptionId = remember { examDescriptionRes(examInfo.name) }
@@ -250,9 +251,7 @@ fun ExamScreen(
                     val green = Color(0xFF4CAF50) // Verde brillante
                     Button(
                         onClick = {
-                            if (homeUniversityExam == null) throw Exception("Missing home university exam")
-                            addExamToLa(learningAgreementId, examInfo, homeUniversityExam)
-                            onExamAdded()
+                            showAddToLaConfirmDialog = true
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = green)
                     ) {
@@ -284,6 +283,33 @@ fun ExamScreen(
                     },
                     title = { Text("Delete Review?") },
                     text = { Text("Are you sure you want to delete your review?") }
+                )
+            }
+
+            if (showAddToLaConfirmDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showAddToLaConfirmDialog = false
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showAddToLaConfirmDialog = false
+                        }) {
+                            Text("No")
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showAddToLaConfirmDialog = false
+                            if (homeUniversityExam == null) throw Exception("Missing home university exam")
+                            addExamToLa(learningAgreementId, examInfo, homeUniversityExam)
+                            onExamAdded()
+                        }) {
+                            Text("Confirm")
+                        }
+                    },
+                    title = { Text("Attention", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+                    text = { Text("Are you sure you want to add this exam to your Learning Agreement?") }
                 )
             }
         }
