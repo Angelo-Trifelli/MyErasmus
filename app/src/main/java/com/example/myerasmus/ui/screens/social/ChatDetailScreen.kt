@@ -40,13 +40,13 @@ import com.example.myerasmus.ui.classes.CommonHelper
 
 
 val userNameColors = mapOf(
-    "Luca Agnellini" to Color(0xFF1E88E5),        // Blue
-    "Martina Monelli" to Color(0xFFD81B60),       // Pink
-    "Giulia Casaldi" to Color(0xFF43A047),        // Green
-    "Carolina Monterini" to Color(0xFFFB8C00),    // Orange
-    "Lucía Fernández" to Color(0xFF6A1B9A),       // Purple
-    "Oliver Bennett" to Color(0xFF3949AB),        // Indigo
-    "Lukas Schneider" to Color(0xFF00897B)        // Teal
+    "Luca Agnellini" to Color(0xFF1E88E5),
+    "Martina Monelli" to Color(0xFFD81B60),
+    "Giulia Casaldi" to Color(0xFF43A047),
+    "Carolina Monterini" to Color(0xFFFB8C00),
+    "Lucía Fernández" to Color(0xFF6A1B9A),
+    "Oliver Bennett" to Color(0xFF3949AB),
+    "Lukas Schneider" to Color(0xFF00897B)
 )
 
 
@@ -58,7 +58,7 @@ data class Message(
     val senderName: String? = null,
     val date: String,
     val isSeen: Boolean = false,
-    val isSystemMessage: Boolean = false // 👈 aggiunto
+    val isSystemMessage: Boolean = false
 )
 
 
@@ -67,7 +67,7 @@ data class Message(
 fun ChatDetailScreen(
     contactName: String,
     isGroup: Boolean,
-    createdByUser: Boolean = false, // 👈 nuovo parametro
+    createdByUser: Boolean = false,
     onBack: () -> Unit,
     onProfileClick: (String) -> Unit
 )
@@ -154,7 +154,7 @@ fun ChatDetailScreen(
                 val systemText = if (isGroup) {
                     if (createdByUser) "You have created the group" else "You joined the group"
                 } else {
-                    null // 👈 Nessun messaggio di sistema per utente generico
+                    null
                 }
 
                 val initialMessages = mutableListOf<Message>()
@@ -189,11 +189,11 @@ fun ChatDetailScreen(
     var currentDate by remember { mutableStateOf("") }
     var showFloatingDate by remember { mutableStateOf(false) }
 
-    // 🧠 Mostra data flottante durante scroll
+
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
             .map { idx ->
-                // cerca data del primo messaggio visibile
+
                 val flatList = groupedMessages.flatMap { (date, msgs) ->
                     listOf(date) + msgs.map { it.date }
                 }
@@ -273,7 +273,7 @@ fun ChatDetailScreen(
                 }
             }
 
-            // ⏱ Data flottante in alto
+
             if (showFloatingDate) {
                 Box(
                     modifier = Modifier
@@ -294,13 +294,13 @@ fun ChatDetailScreen(
                 }
             }
 
-            // 💬 Input messaggio
+
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 8.dp)
-                    .navigationBarsPadding(), // 👈 aggiunge padding automatico sotto la barra di sistema
+                    .navigationBarsPadding(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { }) {
@@ -369,8 +369,8 @@ fun ChatDetailScreen(
 fun MessageBubble(
     message: Message,
     isGroup: Boolean,
-    showMeta: Boolean, // mostra nome+icona
-    showTime: Boolean  // mostra orario+spunte
+    showMeta: Boolean,
+    showTime: Boolean
 ) {
     val backgroundColor = if (message.isUser) Color(0xFFDCF8C6) else Color(0xFFECECEC)
     val alignment = if (message.isUser) Arrangement.End else Arrangement.Start
@@ -388,7 +388,7 @@ fun MessageBubble(
     ) {
         Column(horizontalAlignment = if (message.isUser) Alignment.End else Alignment.Start) {
 
-            // NOME + ICONA (solo se richiesto)
+
             if (isGroup && !message.isUser && message.senderName != null && showMeta) {
                 val color = userNameColors[message.senderName] ?: Color(0xFF3366CC)
                 val profileImage = profileImageRes(message.senderName)
@@ -414,7 +414,7 @@ fun MessageBubble(
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
-            // BOLLA DEL MESSAGGIO
+
             Box(
                 modifier = Modifier
                     .widthIn(max = 300.dp)
@@ -427,7 +427,7 @@ fun MessageBubble(
                 )
             }
 
-            // ORARIO + SPUNTA (solo se ultimo messaggio consecutivo)
+
             if (showTime) {
                 Spacer(modifier = Modifier.height(2.dp))
 

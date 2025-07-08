@@ -66,7 +66,7 @@ fun LearningAgreementScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                // Add Learning Agreement Button
+
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -95,7 +95,7 @@ fun LearningAgreementScreen(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Upload Learning Agreement Button (with warning)
+
                 Box(
                     modifier = Modifier
                         .weight(1f)

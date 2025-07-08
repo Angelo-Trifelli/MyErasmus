@@ -24,7 +24,7 @@ fun ReviewCard(
     rating: Int,
     reviewText: String,
     studentImage: Int,
-    modifier: Modifier = Modifier // ✅ nuovo parametro opzionale
+    modifier: Modifier = Modifier
 ) {
     val imageId = profileImageRes(studentName)
 
@@ -33,7 +33,7 @@ fun ReviewCard(
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFD9EEFF)
         ),
-        modifier = modifier.fillMaxWidth() // ✅ uso del parametro modifier
+        modifier = modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.padding(16.dp)

@@ -99,7 +99,6 @@ fun PublicGroupProfileScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-// Mostra tipo gruppo (privato/pubblico) con icona
                 val isPrivate = isPrivateGroup(group.name)
 
                 Row(

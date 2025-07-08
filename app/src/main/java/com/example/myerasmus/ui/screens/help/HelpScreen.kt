@@ -53,7 +53,7 @@ fun HelpScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.help_image), // ⬅️ tua immagine PNG generata
+                painter = painterResource(id = R.drawable.help_image),
                 contentDescription = "Help Image",
                 modifier = Modifier
                     .size(180.dp)

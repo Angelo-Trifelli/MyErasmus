@@ -280,7 +280,7 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp) // margini più contenuti
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         Text(
                             text = "Choose from gallery",
@@ -290,11 +290,11 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                                 .clickable {
                                     showEditOptions = false
                                     showProfilePreview = false
-                                    // TODO: apri galleria
+
                                 }
                         )
 
-                        Spacer(modifier = Modifier.height(32.dp)) // <-- solo spazio tra le due opzioni
+                        Spacer(modifier = Modifier.height(32.dp))
 
                         Text(
                             text = "Delete",
@@ -304,7 +304,7 @@ fun ProfileScreen(onNavigate: (String) -> Unit) {
                                 .clickable {
                                     showEditOptions = false
                                     showProfilePreview = false
-                                    // TODO: elimina immagine
+
                                 }
                         )
                     }

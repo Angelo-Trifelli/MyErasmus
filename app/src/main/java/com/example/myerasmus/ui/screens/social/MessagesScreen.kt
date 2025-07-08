@@ -247,7 +247,7 @@ fun ExploreList(search: String, onNavigate: (String) -> Unit) {
         },
         containerColor = Color.Transparent
     ) { padding ->
-        // ✅ Scrollable list
+
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -357,7 +357,7 @@ fun ExploreItem(
                             Button(onClick = {
                                 joinPublicGroup(group)
                                 val encoded = URLEncoder.encode(group.name, StandardCharsets.UTF_8.toString())
-                                onNavigate("chatDetail/$encoded/true?createdByUser=false") // ✅ indica che NON è creato da te
+                                onNavigate("chatDetail/$encoded/true?createdByUser=false")
                             }) {
                                 Text("Join")
                             }

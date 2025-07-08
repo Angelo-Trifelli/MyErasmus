@@ -53,7 +53,7 @@ fun LoginScreen(
             }
             .padding(vertical = 32.dp)
     ) {
-        // Icona "?" in alto a sinistra
+
         IconButton(
             onClick = { onHelpClick() },
             modifier = Modifier
@@ -68,7 +68,7 @@ fun LoginScreen(
             )
         }
 
-        // Contenuto centrale
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier

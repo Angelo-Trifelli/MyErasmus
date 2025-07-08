@@ -78,7 +78,7 @@ fun ViewHostExamsScreen(
                 }
             }
 
-            // Scritta centrata in fondo
+
             item {
                 Spacer(modifier = Modifier.height(32.dp))
                 Box(

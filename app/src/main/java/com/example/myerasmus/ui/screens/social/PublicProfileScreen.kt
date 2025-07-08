@@ -20,7 +20,6 @@ import com.example.myerasmus.utils.profileImageRes
 import com.example.myerasmus.R
 import com.example.myerasmus.ui.classes.CommonHelper
 
-// ✅ Data class for public profile
 
 data class PublicProfile(
     val description: String,
@@ -71,7 +70,7 @@ fun PublicProfileScreen(
             description = "Hallo! I'm Lukas, a 22-year-old engineering student from Germany. I love football, tech, and travelling. Excited to start this amazing chapter in Barcelona!",
             country = "Spain", city = "Barcelona", university = "Universitat de Barcelona", year = "2025", semester = "2°"
         )
-        // ✅ Add reviewer profiles here
+
         "Sophie Dubois" -> PublicProfile(
             description = "Hi! I'm Sophie, an economics student from France. I love discussing global markets and enjoy French pastries during study breaks!",
             country = "Spain", city = "Barcelona", university = "Universitat de Barcelona", year = "2023", semester = "1°",

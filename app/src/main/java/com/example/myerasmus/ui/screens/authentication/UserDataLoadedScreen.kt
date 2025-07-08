@@ -55,12 +55,12 @@ fun UserDataLoadedScreen(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) { focusManager.clearFocus() },
-        color = Color(0xFFF6F7FB) // light pastel background
+        color = Color(0xFFF6F7FB)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Back button row
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

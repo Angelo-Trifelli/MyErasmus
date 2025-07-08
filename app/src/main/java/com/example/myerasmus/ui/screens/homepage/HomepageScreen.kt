@@ -23,7 +23,7 @@ fun HomepageScreen(
             )
         }
     ) {
-        // ✅ Inserisci la nuova schermata notifiche moderna
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

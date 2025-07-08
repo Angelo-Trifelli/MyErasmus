@@ -248,7 +248,7 @@ fun ExamScreen(
                 }
 
                 if (showAddToLaButton) {
-                    val green = Color(0xFF4CAF50) // Verde brillante
+                    val green = Color(0xFF4CAF50)
                     Button(
                         onClick = {
                             showAddToLaConfirmDialog = true

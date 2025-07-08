@@ -8,13 +8,13 @@ object CommonHelper {
 
     private const val currentUserName = "Anna Ruzzoli"
 
-    // Trova esame per nome
+
     fun findExamByName(name: String): HostUniversityExam {
         return getAllHostExams().find { it.name == name }
             ?: throw IllegalArgumentException("Exam not found: $name")
     }
 
-    // Immagine del professore
+
     fun profileImageRes(profName: String): Int {
         return when (profName) {
             "Javier Ruiz" -> R.drawable.macroeconomics_professor
@@ -32,7 +32,7 @@ object CommonHelper {
         }
     }
 
-    // Immagine del recensore
+
     fun reviewerImageRes(studentName: String): Int {
         return when (studentName) {
             "Sophie Dubois" -> R.drawable.reviewer_sophie
@@ -65,7 +65,7 @@ object CommonHelper {
         }
     }
 
-    // Recensioni statiche (iniziali)
+
     private val predefinedReviews = mapOf(
         "International Marketing" to listOf(
             Triple("Claire Dupont", 5, R.string.marketing_claire_review),
@@ -114,37 +114,37 @@ object CommonHelper {
 
     )
 
-    // Recensioni dinamiche (aggiunte/modificate da utenti)
+
     private val examReviews = mutableMapOf<String, MutableList<Triple<String, Int, String>>>()
 
-    // ✅ Aggiungi/modifica recensione di Anna Ruzzoli
+
     fun addReview(examName: String, rating: Int, reviewText: String) {
         val list = examReviews.getOrPut(examName) { mutableListOf() }
         list.removeAll { it.first == currentUserName }
         list.add(Triple(currentUserName, rating, reviewText))
     }
 
-    // ✅ Elimina recensione di Anna Ruzzoli
+
     fun deleteReview(examName: String) {
         examReviews[examName]?.removeIf { it.first == currentUserName }
     }
 
-    // ✅ Controlla se esiste una recensione dell’utente attuale
+
     fun hasUserReview(examName: String): Boolean {
         return examReviews[examName]?.any { it.first == currentUserName } == true
     }
 
-    // ✅ Recupera la recensione dell’utente attuale
+
     fun getUserReview(examName: String): Triple<String, Int, String>? {
         return examReviews[examName]?.find { it.first == currentUserName }
     }
 
-    // ✅ Solo recensioni dinamiche
+
     fun getDynamicReviewsForExam(examName: String): List<Triple<String, Int, String>> {
         return examReviews[examName].orEmpty()
     }
 
-    // ✅ Tutte le recensioni (statiche + dinamiche)
+
     fun getReviewsForExam(examName: String): List<Triple<String, Int, Any>> {
         val static = predefinedReviews[examName].orEmpty().map { Triple(it.first, it.second, it.third as Any) }
         val dynamic = getDynamicReviewsForExam(examName).map { Triple(it.first, it.second, it.third as Any) }

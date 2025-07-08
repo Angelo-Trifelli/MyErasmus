@@ -43,11 +43,11 @@ fun CreateGroupScreen(
     var showBackConfirmation by remember { mutableStateOf(false) }
 
     val allUsers = listOf(
-        // Utenti social
+
         "Lucía Fernández", "Carolina Monterini", "Luca Agnellini", "Martina Monelli",
         "Giulia Casaldi", "Oliver Bennett",
 
-        // Recensori extra
+
         "Sophie Dubois", "Marek Nowak", "Luigi Conti", "Elena Petrova", "Jonas Berg",
         "Inés Muñoz", "Claire Dupont", "Alexander Ivanov", "Theresa Schmidt", "Daniel Johansson",
         "Yasmin Ben Saïd", "Kim Lee", "Eduardo Silva", "Sofia Rossi", "Sven Müller",
@@ -212,7 +212,7 @@ fun CreateGroupScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp)) // spazio extra per evitare overlap
+            Spacer(modifier = Modifier.height(80.dp))
         }
 
         if (showImageOptions) {

@@ -29,7 +29,7 @@ import com.example.myerasmus.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-// DATA MODEL
+
 
 data class Notification(
     val title: String,

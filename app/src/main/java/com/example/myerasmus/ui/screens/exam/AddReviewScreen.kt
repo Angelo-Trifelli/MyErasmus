@@ -26,7 +26,7 @@ fun AddReviewScreen(
     var showExitDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
 
-    // Dialog: Uscita senza salvare
+
     if (showExitDialog) {
         AlertDialog(
             onDismissRequest = { showExitDialog = false },
@@ -48,7 +48,7 @@ fun AddReviewScreen(
         )
     }
 
-    // Dialog: Conferma salvataggio
+
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
@@ -56,7 +56,7 @@ fun AddReviewScreen(
                 TextButton(onClick = {
                     showConfirmDialog = false
                     onSaveReview(selectedRating, reviewText.text)
-                    // 🔥 IMPORTANTE: NON chiamare onBack() qui, viene gestito esternamente
+
                 }) {
                     Text("Confirm")
                 }

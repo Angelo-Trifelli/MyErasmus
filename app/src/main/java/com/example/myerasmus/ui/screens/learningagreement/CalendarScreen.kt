@@ -150,7 +150,7 @@ fun CalendarScreen(
             }
         }
 
-        // Popup dialog
+
         if (popupCourses.isNotEmpty()) {
             AlertDialog(
                 onDismissRequest = { popupCourses = emptyList() },

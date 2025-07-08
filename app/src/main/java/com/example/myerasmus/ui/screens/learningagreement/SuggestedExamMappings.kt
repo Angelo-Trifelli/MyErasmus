@@ -4,7 +4,7 @@ val suggestedExamMappings: Map<String, HostUniversityExam> by lazy {
     val hostExams = getAllHostExams().associateBy { it.name }
 
     mapOf(
-        // esempio: "nome esame della home" to oggetto esame della host
+
         "Business Economics" to (hostExams["Macroeconomics I"] ?: getAllHostExams()[0]),
         "Mathematics" to (hostExams["Data Analysis"] ?: getAllHostExams()[1]),
         "Statistics" to (hostExams["Development Economics"] ?: getAllHostExams()[2]),

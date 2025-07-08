@@ -59,7 +59,7 @@ fun LearningAgreementEditorScreen(
 
     var learningAgreementStatusLabel by remember { mutableStateOf(setStatusLabel(learningAgreement)) }
 
-    //Track in a separate variable in order to update the UI in real-time
+
     var learningAgreementTitle by remember { mutableStateOf(learningAgreement.title) }
     var statusLevel by remember { mutableStateOf(learningAgreement.status) }
 

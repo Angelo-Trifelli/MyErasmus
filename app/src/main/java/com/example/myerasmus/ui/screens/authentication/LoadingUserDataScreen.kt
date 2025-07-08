@@ -23,13 +23,13 @@ import kotlinx.coroutines.delay
 fun LoadingUserDataScreen(
     onFinish: () -> Unit
 ) {
-    // Avvia navigazione dopo 5 secondi
+
     LaunchedEffect(Unit) {
         delay(5000)
         onFinish()
     }
 
-    // UI di caricamento
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
