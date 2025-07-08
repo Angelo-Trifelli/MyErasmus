@@ -227,7 +227,7 @@ fun ChatDetailScreen(
                     .padding(bottom = 60.dp)
             ) {
                 groupedMessages.forEach { (date, dailyMessages) ->
-                    // Divider della data
+
                     item {
                         Box(
                             modifier = Modifier

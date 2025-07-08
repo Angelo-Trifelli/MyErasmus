@@ -213,13 +213,11 @@ fun AppNavigation(navController: NavHostController) {
             ChatDetailScreen(
                 contactName = name,
                 isGroup = isGroup,
-                createdByUser = createdByUser, // ✅
+                createdByUser = createdByUser,
                 onBack = {
-                    navController.navigate("messages") {
-                        popUpTo("messages") { inclusive = false }
-                        launchSingleTop = true
-                    }
-                },
+                    navController.popBackStack()
+                }
+                ,
                 onProfileClick = { profileName ->
                     val encoded = URLEncoder.encode(profileName, "UTF-8")
                     navController.navigate("publicProfile/$encoded")
